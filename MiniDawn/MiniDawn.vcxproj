@@ -19,11 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GMiniDawnEngineLoop.cpp" />
     <ClCompile Include="Source\GenericWindow.cpp" />
     <ClCompile Include="Source\GErrorHandler.cpp" />
     <ClCompile Include="Source\DawnMain.cpp" />
     <ClCompile Include="Source\GMiniDawnEngine.cpp" />
+    <ClCompile Include="Source\GMiniDawnEngineLoop.cpp" />
     <ClCompile Include="Source\WindowsWindow.cpp" />
     <ClCompile Include="Source\WinMain.cpp" />
   </ItemGroup>

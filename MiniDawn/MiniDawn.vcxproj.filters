@@ -33,14 +33,14 @@
     <ClCompile Include="Source\DawnMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GMiniDawnEngineLoop.cpp">
-      <Filter>Source Files\Globals</Filter>
-    </ClCompile>
     <ClCompile Include="Source\GenericWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\WindowsWindow.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GMiniDawnEngineLoop.cpp">
+      <Filter>Source Files\Globals</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
