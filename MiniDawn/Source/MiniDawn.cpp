@@ -8,5 +8,10 @@ int DawnMain(const TCHAR* CmdLine, HINSTANCE hInstance, HINSTANCE hPrevInstance,
 int DawnMain(const TCHAR* CmdLine)
 #endif
 {
-
+    int error = 0;
+    // Engine PreInit
+    // Engine Init
+    // Loop Engine Tick
+    // Engine Exit
+    return error;
 }
