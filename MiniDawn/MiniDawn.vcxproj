@@ -19,15 +19,21 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="GMiniDawnEngineLoop.cpp" />
+    <ClCompile Include="Source\GenericWindow.cpp" />
     <ClCompile Include="Source\GErrorHandler.cpp" />
     <ClCompile Include="Source\DawnMain.cpp" />
     <ClCompile Include="Source\GMiniDawnEngine.cpp" />
+    <ClCompile Include="Source\WindowsWindow.cpp" />
     <ClCompile Include="Source\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\GenericWindow.hpp" />
     <ClInclude Include="Include\GErrorHandler.hpp" />
+    <ClInclude Include="Include\GMiniDawnEngineLoop.hpp" />
     <ClInclude Include="Include\MiniDawn.hpp" />
     <ClInclude Include="Include\GMiniDawnEngine.hpp" />
+    <ClInclude Include="Include\WindowsWindow.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B56B1A9C-C3DD-41B7-A651-0DB77FA2A13F}</ProjectGuid>

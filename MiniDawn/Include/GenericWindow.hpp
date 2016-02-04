@@ -10,7 +10,7 @@ public:
 
     virtual void Register();
     virtual void Register(void* hInstance);
-    virtual bool Initialise(void* hInstance, int nCmdShow);
+    virtual int Initialise(void* hInstance, int nCmdShow);
 
     // TODO: Make generic... eventually, this'll do for windows for now
     virtual void setStyle(unsigned int newStyle);
@@ -57,3 +57,4 @@ protected:
     void* menu;
     void* param;
 };
+using pWindow = std::unique_ptr<GenericWindow>;

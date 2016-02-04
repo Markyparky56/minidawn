@@ -28,7 +28,7 @@ void WindowsWindow::Register(void * hInstance)
     RegisterClassEx(&wcex);
 }
 
-bool WindowsWindow::Initialise(void * hInstance, int nCmdShow)
+int WindowsWindow::Initialise(void * hInstance, int nCmdShow)
 {
     hwnd = static_cast<void*>
             (

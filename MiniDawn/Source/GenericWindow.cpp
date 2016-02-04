@@ -18,7 +18,7 @@ void GenericWindow::Register(void * hInstance)
 {
 }
 
-bool GenericWindow::Initialise(void * hInstance, int nCmdShow)
+int GenericWindow::Initialise(void * hInstance, int nCmdShow)
 {
     return false;
 }

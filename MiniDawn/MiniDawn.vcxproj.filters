@@ -33,6 +33,15 @@
     <ClCompile Include="Source\DawnMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GMiniDawnEngineLoop.cpp">
+      <Filter>Source Files\Globals</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GenericWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\WindowsWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\MiniDawn.hpp">
@@ -43,6 +52,15 @@
     </ClInclude>
     <ClInclude Include="Include\GMiniDawnEngine.hpp">
       <Filter>Header Files\Globals</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\GMiniDawnEngineLoop.hpp">
+      <Filter>Header Files\Globals</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\GenericWindow.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\WindowsWindow.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

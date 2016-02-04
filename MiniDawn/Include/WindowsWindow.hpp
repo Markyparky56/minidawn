@@ -11,7 +11,7 @@ public:
     ~WindowsWindow();
 
     void Register(void* hInstance) override;
-    bool Initialise(void* hInstance, int nCmdShow) override;
+    int Initialise(void* hInstance, int nCmdShow) override;
 
     void setStyle(unsigned int newStyle) override;
     void setIcon(void* newIcon) override;
