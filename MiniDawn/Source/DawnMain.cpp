@@ -10,8 +10,18 @@ int DawnMain(const TCHAR* CmdLine)
 {
     int error = 0;
     // Engine PreInit
+    error = GMiniDawnEngine.PreInit();
+    if (error) return error;
     // Engine Init
+    error = GMiniDawnEngine.Init();
+    if (error) return error;
     // Loop Engine Tick
+    do 
+    {
+        error = GMiniDawnEngine.Tick();
+    } while (GMiniDawnEngine.IsRunning());
+    if (error) return error;
     // Engine Exit
+    error = GMiniDawnEngine.Exit();
     return error;
 }

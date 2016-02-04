@@ -21,21 +21,27 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\MiniDawn.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\WinMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GErrorHandler.cpp">
+    <ClCompile Include="Source\GErrorHandler.cpp">
       <Filter>Source Files\Globals</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GMiniDawnEngine.cpp">
+      <Filter>Source Files\Globals</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DawnMain.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\MiniDawn.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GErrorHandler.hpp">
+    <ClInclude Include="Include\GErrorHandler.hpp">
+      <Filter>Header Files\Globals</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\GMiniDawnEngine.hpp">
       <Filter>Header Files\Globals</Filter>
     </ClInclude>
   </ItemGroup>
