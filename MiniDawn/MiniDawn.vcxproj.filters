@@ -19,6 +19,9 @@
     <Filter Include="Source Files\Globals">
       <UniqueIdentifier>{f59d7b1c-ba41-4c75-b17b-2f3459de2513}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Templates">
+      <UniqueIdentifier>{e2e14cae-e964-4330-a0d2-2b56bd83e2a1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\WinMain.cpp">
@@ -61,6 +64,15 @@
     </ClInclude>
     <ClInclude Include="Include\WindowsWindow.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\GenericApplication.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\GenericMessageHandler.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\SharedRef.hpp">
+      <Filter>Header Files\Templates</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

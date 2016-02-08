@@ -28,11 +28,14 @@
     <ClCompile Include="Source\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\GenericApplication.hpp" />
+    <ClInclude Include="Include\GenericMessageHandler.hpp" />
     <ClInclude Include="Include\GenericWindow.hpp" />
     <ClInclude Include="Include\GErrorHandler.hpp" />
     <ClInclude Include="Include\GMiniDawnEngineLoop.hpp" />
     <ClInclude Include="Include\MiniDawn.hpp" />
     <ClInclude Include="Include\GMiniDawnEngine.hpp" />
+    <ClInclude Include="Include\SharedRef.hpp" />
     <ClInclude Include="Include\WindowsWindow.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
