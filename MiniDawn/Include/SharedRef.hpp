@@ -952,3 +952,97 @@ private:
     ObjectType* Object;
     WeakReferencer WeakReferenceCount;
 };
+
+template<class T> struct IsWeakPointerType<WeakPtr<T> > { enum {Value = true }; };
+template<class T> struct IsZeroConstructType<WeakPtr<T> > { enum { Value = true }; };
+
+// Derive you class from SharedFromThis to enable access to a SharedRef directly from an object
+// instance that's already been allocated
+template<class ObjectType>
+class SharedFromThis
+{
+public:
+    // Provides access to a shared reference to this object.
+    // Only valid to call this after a shared reference (or pointer) to the object
+    // has already been created
+    SharedRef<ObjectType> AsShared()
+    {
+        SharedPtr<ObjectType> SharedThis(WeakThis.Pin());
+        // Assert SharedThis.Get() == this
+
+        return SharedThis.ToSharedRef();
+    }
+
+    // Provides access to a shared reference to this object (const)
+    SharedRef<ObjectType const> AsShared() const
+    {
+        SharedPtr<ObjectType const> SharedThis(WeakThis);
+        // Assert Sharedthis.Get() == this
+
+        return SharedThis.ToSharedRef();
+    }
+
+protected:
+    // Provides access to a shared reference to an object, given the object's 'this' pointer
+    // Uses the 'this' pointer to derive the object's actual type, then casts and returns an
+    // appropriately typed shared reference
+    template<class OtherType>
+    inline static SharedRef<OtherType> SharedThis(OtherType* ThisPtr)
+    {
+        return StaticCastSharedRef<OtherType>(ThisPtr->AsShared());
+    }
+
+    // Const version of above
+    template<class OtherType>
+    inline static SharedRef<OtherType const> SharedThis(const OtherType* ThisPtr)
+    {
+        return StaticCastSharedRef<OtherType const>(ThisPtr->AsShared());
+    }
+
+public:
+    // Internal Use Only 
+    template<class SharedPtrType, class OtherType>
+    inline void UpdateWeakReferenceInternal(SharedPtr<SharedPtrType> const* InSharedPtr, OtherType* InObject) const
+    {
+        if (!WeakThis.IsValid())
+        {
+            WeakThis = SharedPtr<ObjectType>(*InSharedPtr, InObject);
+        }
+    }
+
+    // Internal Use Only
+    template<class SharedRefType, class OtherType>
+    inline void UpdateWeakReferenceInternal(SharedRef<SharedRefType> const* InSharedRef, OtherType* InObject) const
+    {
+        if (!WeakThis.IsValid())
+        {
+            WeakThis = SharedRef<ObjectType>(*InSharedRef, InObject);
+        }
+    }
+
+    // Checks whether given instance has been already made shareable
+    // Use in checks to detect when it happened, since it's a straight way to crashing (supposedly, I honestly have no idea how this stuff works)
+    inline bool HasBeenAlreadyMadeSharable() const
+    {
+        return WeakThis.IsValid();
+    }
+
+protected:
+    // Hidden stub constructor
+    SharedFromThis() {}
+
+    // Hissen stub copy constructor
+    SharedFromThis(SharedFromThis const&) {}
+
+    // Hidden stub assignment operator
+    inline SharedFromThis& operator=(SharedFromThis const&)
+    {
+        return *this;
+    }
+
+    // Hidden stub destructor
+    ~SharedFromThis() {}
+
+private:
+    mutable WeakPtr<ObjectType> WeakThis;
+};
