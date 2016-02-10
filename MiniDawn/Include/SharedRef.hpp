@@ -343,7 +343,7 @@ private:
 };
 
 template<class SharedPtrType, class ObjectType, class  OtherType>
-inline void EnableSharedForThis(SharedPtr<SharedPtrType> const* InSharedPtr, ObjectType const* InObject, SharedFromThis<OtherType> const* InShareable)
+inline void EnableSharedFromThis(SharedPtr<SharedPtrType> const* InSharedPtr, ObjectType const* InObject, SharedFromThis<OtherType> const* InShareable)
 {
     if (InShareable != nullptr)
     {
@@ -378,7 +378,7 @@ inline void EnableSharedFromThis(SharedRef<SharedRefType>* InSharedRef, ObjectTy
     }
 }
 
-inline void EnabledSharedFromThis(...) {}
+inline void EnableSharedFromThis(...) {}
 
 // Cast a shared reference to another type
 template< class CastToType, class CastFromType>
@@ -386,3 +386,202 @@ inline SharedRef<CastToType> StaticCastSharedRef(SharedRef< CastFromType > const
 {
     return SharedRef<CastToType>(InSharedRef, FStaticCastTag)
 }
+
+// SharedRef is non-nullable
+template< class ObjectType >
+class SharedRef
+{
+public:
+    // No default constructor due to not supporting empty references
+    // Must be initalised with a valid object at construction time
+
+    // Constructs a shared reference that owns the specified object
+    // Cannot be nullptr
+    template <class OtherType>
+    inline explicit SharedRef(ObjectType* InObject)
+        : Object(InObject)
+        , SharedReferenceCount(NewDefaultReferenceController(InObject))
+    {
+        Init(InObject);
+    }
+
+    // Constructs a shared reference that owns the specified object
+    // Cannot be nullptr
+    template<class OtherType, class DeleterType>
+    inline SharedRef(OtherType* InObject, DeleterType&& InDeleter)
+        : Object(InObject)
+        , SharedReferenceCount(NewCustomReferenceController(InObject, Forward<DeleterType>(InDeleter)))
+    {
+        Init(InObject);
+    }
+
+    // Constructs a shared reference using a proxy reference to a raw pointer
+    // Cannot be nullptr
+    template<class OtherType>
+    inline SharedRef(RawPtrProxy<OtherType> const& InRawPtrProxy)
+        : Object(InRawPtrProxy.object)
+        , SharedRefenceCount(InRawPtrProxy.ReferenceController)
+    {
+        EnableSharedFromThis(this, InRawPtrProxy.object, InRawPtrProxy.object);
+    }
+
+    // Constructs a shared reference as a reference to an exisiting shared reference's object
+    // Need to implicitly upcast to base classes
+    template<class OtherType>
+    inline SharedRef(SharedRef<OtherType> const& InSharedRef)
+        : Object(InSharedRef.Object)
+        , SharedReferenceCount(InSharedRef.SharedReferenceCount)
+    { }
+
+    // Used internally to statically cast one shared reference to another
+    // Don't use this directly, instead use StaticCastSharedRef
+    // Creates a shared reference as a shared reference to an exisiting shared reference after 
+    // statically casting that reference's object (what?)
+    template<class OtherType>
+    inline SharedRef(SharedRef<OtherType> const& InSharedRef, StaticCastTag)
+        : Object(static_cast<ObjectType*>(InSharedRef.Object))
+        , SharedReferenceCount(InSharedRef.SharedReferenceCount)
+    { }
+
+    // Used internally to cast a const shared reference to a mutable reference
+    // Don't use this directly, instead use ConstCastSharedRef
+    // Creates a shared reference as a shared reference to an exisiting shared reference after
+    // const casting that references object (try saying that three times fast!)
+    template<class OtherType>
+    inline SharedRef(SharedRef<OtherType> const& OtherSharedRef, ObjectType* InObject)
+        : Object(InObject)
+        , SharedReferenceCount(OtherSharedRef.SharedReferenceCount)
+    { }
+
+    // Used internally to create a shared reference from an exisiting shared reference
+    // while using the specified object reference instead of the incoming shared reference's object pointer
+    // This is used with the SharedFromThis feature by UpdateWeakReferenceInternal
+    inline SharedRef(SharedRef const& InSharedRef)
+        : Object(InSharedRef.Object)
+        , SharedReferenceCount(InSharedRef.SharedReferenceCount)
+    { }
+
+    inline SharedRef(SharedRef&& InSharedRef)
+        : Object(InSharedRef.Object)
+        , SharedReferenceCount(InSharedRef.SharedReferenceCount)
+    {
+        // No move performed, because it would leave a sharedref in a null state
+        // Provided to avoid the compiler complaining
+    }
+
+    // Assignment operators
+    // Replaces the shared reference with the specified reference, the previous referenced object
+    // will no longer be referenced and deleted if there are no other references
+    inline SharedRef& operator=(SharedRef const& InSharedRef)
+    {
+        SharedReferenceCount = InSharedRef.SharedReferenceCount;
+        Object InSharedRef.Object;
+        return *this;
+    }
+
+    inline SharedRef& operator=(SharedRef&& InSharedRef)
+    {
+        //TODO: MemSwap stuff
+    }
+
+    template<class OtherType>
+    inline SharedRef& operator=(RawPtrProxy<OtherType> const& InRawPtrProxy)
+    {
+        *this = SharedRef<ObjectType>(InRawPtrProxy);
+        return *this;
+    }
+
+    // Return a C++ Reference to the object this shared reference is referencing
+    inline ObjectType& Get() const
+    {
+        return *Object;
+    }
+
+    // Dereference operator returns a reference to the object this shared reference points to
+    inline ObjectType& operator*() const
+    {
+        return *Object;
+    }
+
+    // Arrow operator returns a pointer to this shared reference's object
+    inline ObjectType* operator->() const
+    {
+        return Object;
+    }
+
+    // Returns the number of shared references to this object, including itself
+    // Not fast, for debugging
+    inline const int32_t GetsharedReferencecount() const
+    {
+        return SharedReferenceCount.GetSharedReferenceCount();
+    }
+
+    // Returns true if this is the only shared reference to this object
+    // May be weak references
+    // Not fast, for debugging
+    inline const bool IsUnique() const
+    {
+        return SharedReferenceCount.IsUnique();
+    }
+
+private:
+
+    template<class OtherType>
+    void Init(OtherType* InObject)
+    {
+        EnableSharedFromThis(this, InObject, InObject);
+    }
+
+    // Converts a shared pointer to a shared reference, pointer must be valid
+    // Intentionally private, use ToSharedRef instead
+    template<class OtherType>
+    inline explicit SharedRef(SharedPtr<OtherType> const& InSharedPtr)
+        : Object(InSharedPtr.Object)
+        , SharedReferenceCount(InSharedPtr.SharedReferenceCount)
+    {
+        // Assert IsValid()
+    }
+
+    template<class OtherType>
+    inline explicit SharedRef(SharedPtr<OtherType>&& InSharedPtr)
+        : Object(InSharedPtr.Object)
+        , SharedReferenceCount(MoveTemp(InSharedPtr.SharedReferenceCount))
+    {
+        InSharedPtr.Object = nullptr;
+
+        // Assert IsValid()
+    }
+
+    // Checks to see if this shared reference is actually pointing to an object
+    // Only used internally because shared references must always be valid
+    inline const bool IsValid() const
+    {
+        return Object != nullptr;
+    }
+
+    // Hash function omitted, maybe later?
+
+    // Kinda sad when you're friends with yourself
+    template<class OtherType> friend class SharedRef;
+    
+    template<class OtherType> friend class SharedPtr;
+    template<class OtherType> friend class WeakPtr;
+
+private:
+    ObjectType* Object;
+    SharedReferencer SharedReferenceCount;
+};
+
+// Wrapper for a type that yields a reference to that type
+template<class T>
+struct MakeReferenceTo
+{
+    typedef T& Type;
+};
+
+// Specialisation for MakeReferenceToVoid
+template<>
+struct MakeReferenceTo<void>
+{
+    typedef void Type;
+};
