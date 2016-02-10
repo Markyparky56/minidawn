@@ -1,6 +1,5 @@
 #pragma once
 #include <cstdint> // Probably should make my own type header
-#include <utility>
 
 // RemoveReference
 template< typename T > struct RemoveReference       { typedef T Type; };
@@ -26,14 +25,16 @@ inline T&& Forward(typename RemoveReference<T>::Type&& Obj)
 }
 
 template< class ObjectType > class SharedRef;
-// SharedPtr
-// WeakPtr
+template< class ObjectType > class SharedPtr;
+template< class ObjectType > class WeakPtr;
+template< class ObjectType > class SharedFromThis;
 
 // Heavily inspired by the Unreal Engine implementation
 
-struct FStaticCastTag {};
-struct FConstCastTag {};
-struct FNullTag {};
+// Dummies for internal template typecasts
+struct StaticCastTag {};
+struct ConstCastTag {};
+struct NullTag {};
 
 class ReferenceControllerBase
 {
@@ -136,6 +137,252 @@ struct ReferenceControllerOps
 
     static inline void ReleaseSharedReference(ReferenceControllerBase* ReferenceController)
     {
-        
+        if (--ReferenceController->SharedReferenceCount == 0)
+        {
+            ReferenceController->DestroyObject();
+            ReleaseWeakReference(ReferenceController);
+        }
+    }
+
+    static inline void AddWeakReference(ReferenceControllerBase* ReferenceController)
+    {
+        ++ReferenceController->WeakReferenceCount;
+    }
+
+    static void ReleaseWeakReference(ReferenceControllerBase* ReferenceController)
+    {
+        if (--ReferenceController->WeakReferenceCount == 0)
+        {
+            delete ReferenceController;
+        }
     }
 };
+
+class SharedReferencer
+{
+    typedef ReferenceControllerOps TOps;
+
+public:
+    SharedReferencer()
+        : ReferenceController(nullptr)
+    {}
+
+    inline explicit SharedReferencer(ReferenceControllerBase* InReferenceController)
+        : ReferenceController(InReferenceController)
+    {}
+
+    inline SharedReferencer(SharedReferencer const & InSharedReference)
+        : ReferenceController(InSharedReference.ReferenceController)
+    {
+        if (ReferenceController != nullptr)
+        {
+            TOps::AddSharedReference(ReferenceController);
+        }
+    }
+
+    inline SharedReferencer(SharedReferencer&& InSharedReference)
+        : ReferenceController(InSharedReference.ReferenceController)
+    {
+        InSharedReference.ReferenceController = nullptr;
+    }
+
+    SharedReferencer(WeakReferencer const& InWeakReference)
+        : ReferenceController(InWeakReference.ReferenceController)
+    {
+        if(ReferenceController != nullptr)
+        {
+            if (!TOps::ConditionallyAddSharedReference(ReferenceController))
+            {
+                ReferenceController = nullptr;
+            }
+        }
+    }
+
+    inline ~SharedReferencer()
+    {
+        if (ReferenceController != nullptr)
+        {
+            TOps::ReleaseSharedReference(ReferenceController);
+        }
+    }
+
+    inline SharedReferencer& operator=(SharedReferencer const& InSharedReference)
+    {
+        auto NewReferenceController = InSharedReference.ReferenceController;
+        if (NewReferenceController != ReferenceController)
+        {
+            if (NewReferenceController != nullptr)
+            {
+                TOps::AddSharedReference(NewReferenceController);
+            }
+
+            if (ReferenceController != nullptr)
+            {
+                TOps::ReleaseSharedReference(ReferenceController);
+            }
+
+            ReferenceController = NewReferenceController;
+        }
+
+        return *this;
+    }
+
+    inline const bool IsValid() const
+    {
+        return ReferenceController != nullptr;
+    }
+
+    inline const int32_t GetSharedReferenceCount() const
+    {
+        return ReferenceController != nullptr ? TOps::GetSharedReferenceCount(ReferenceController) : 0;
+    }
+
+    inline const bool IsUnique() const
+    {
+        return GetSharedReferenceCount() == 1;
+    }
+
+private:
+    friend class WeakReferencer;
+    ReferenceControllerBase* ReferenceController;
+};
+
+class WeakReferencer
+{
+    typedef ReferenceControllerOps TOps;
+
+public:
+    inline WeakReferencer()
+        : ReferenceController(nullptr)
+    {}
+
+    inline WeakReferencer(WeakReferencer const & InWeakRefCountPointer)
+        : ReferenceController(InWeakRefCountPointer.ReferenceController)
+    {
+        if (ReferenceController != nullptr)
+        {
+            TOps::AddWeakReference(ReferenceController);
+        }
+    }
+
+    inline WeakReferencer(WeakReferencer&& InWeakRefCountPointer)
+        : ReferenceController(InWeakRefCountPointer.ReferenceController)
+    {
+        InWeakRefCountPointer.ReferenceController = nullptr;
+    }
+
+    inline WeakReferencer(SharedReferencer const& InSharedRefCountPointer)
+        : ReferenceController(InSharedRefCountPointer.ReferenceController)
+    {
+        if (ReferenceController != nullptr)
+        {
+            TOps::AddWeakReference(ReferenceController);
+        }
+    }
+
+    inline ~WeakReferencer()
+    {
+        if (ReferenceController != nullptr)
+        {
+            TOps::ReleaseWeakReference(ReferenceController);
+        }
+    }
+
+    inline WeakReferencer& operator=(WeakReferencer const & InWeakReference)
+    {
+        AssignReferenceController(InWeakReference.ReferenceController);
+        return *this;
+    }
+
+    inline WeakReferencer& operator=(WeakReferencer&& InWeakReference)
+    {
+        auto OldReferenceController = ReferenceController;
+        ReferenceController = InWeakReference.ReferenceController;
+        InWeakReference.ReferenceController = nullptr;
+        if (OldReferenceController != nullptr)
+        {
+            TOps::ReleaseWeakReference(OldReferenceController);
+        }
+
+        return *this;
+    }
+
+    inline WeakReferencer& operator=(SharedReferencer const & InSharedReference)
+    {
+        AssignReferenceController(InSharedReference.ReferenceController);
+        return *this;
+    }
+
+    inline const bool IsValid() const
+    {
+        return ReferenceController != nullptr && TOps::GetSharedReferenceCount(ReferenceController) > 0;
+    }
+
+private:
+    inline void AssignReferenceController(ReferenceControllerBase* NewReferenceController)
+    {
+        if (NewReferenceController != ReferenceController)
+        {
+            if (NewReferenceController != nullptr)
+            {
+                TOps::AddWeakReference(NewReferenceController);
+            }
+
+            if (ReferenceController != nullptr)
+            {
+                TOps::ReleaseWeakReference(ReferenceController);
+            }
+
+            ReferenceController = NewReferenceController;
+        }
+    }
+
+private:
+    friend class SharedReferencer;
+    ReferenceControllerBase* ReferenceController;
+};
+
+template<class SharedPtrType, class ObjectType, class  OtherType>
+inline void EnableSharedForThis(SharedPtr<SharedPtrType> const* InSharedPtr, ObjectType const* InObject, SharedFromThis<OtherType> const* InShareable)
+{
+    if (InShareable != nullptr)
+    {
+        InShareable->UpdateWeakReferenceInternal(InSharedPtr, const_cast<ObjectType*>(InObject));
+    }
+}
+
+template< class SharedPtrType, class ObjectType, class OtherType>
+inline void EnableSharedFromThis(SharedPtr<SharedPtrType>* InSharedPtr, ObjectType const* InObject, SharedFromThis<OtherType> const* InShareable)
+{
+    if (InShareable != nullptr)
+    {
+        InShareable->UpdateWeakReferenceInternal(InSharedPtr, const_cast<ObjectType*>(InObject));
+    }
+}
+
+template<class SharedRefType, class ObjectType, class OtherType>
+inline void EnableSharedFromThis(SharedRef<SharedRefType> const* InSharedRef, ObjectType const* InObject, SharedFromThis<OtherType> const* InShareable)
+{
+    if (InShareable != nullptr)
+    {
+        InShareable->UpdateWeakReferenceInternal(InSharedRef, const_cast<ObjectType*>(InObject));
+    }
+}
+
+template<class SharedRefType, class ObjectType, class OtherType>
+inline void EnableSharedFromThis(SharedRef<SharedRefType>* InSharedRef, ObjectType, const* InObject, SharedFromThis<OtherType> const* InShareable)
+{
+    if (InShareable != nullptr)
+    {
+        InShareable->UpdateWeakReferenceInternal(InSharedRef, const_Cast<ObjectType*>(InObject));
+    }
+}
+
+inline void EnabledSharedFromThis(...) {}
+
+// Cast a shared reference to another type
+template< class CastToType, class CastFromType>
+inline SharedRef<CastToType> StaticCastSharedRef(SharedRef< CastFromType > const& InSharedRef)
+{
+    return SharedRef<CastToType>(InSharedRef, FStaticCastTag)
+}
