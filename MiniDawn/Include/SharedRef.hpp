@@ -585,3 +585,370 @@ struct MakeReferenceTo<void>
 {
     typedef void Type;
 };
+
+// SharedPtr is a non-intrusive reference counted authoriative object pointer
+template<class ObjectType>
+class SharedPtr
+{
+public:
+
+    // Constructs an empty shared pointer
+    inline SharedPtr(NullTag* = nullptr)
+        : Object(nullptr)
+        , SharedReferenceCount()
+    {}
+
+    // Constructs a shared pointer that owns the specified object, accepts nullptr
+    template<class OtherType>
+    inline explicit SharedPtr(OtherType* InObject)
+        : Object(InObject)
+        , SharedReferenceCount(NewDefaultReferenceController(InObject))
+    {
+        EnableSharedFromThis(this, InObject, InObject);
+    }
+
+    // Constructs a shared pointer that owns the specified object, accepts nullptr
+    template<class OtherType, class DeleterType>
+    inline SharedPtr(OtherType* InObject, DeleterType&& InDeleter)
+        : Object(InObject)
+        , SharedReferenceCount(NewCustomReferencecontroller(InObject, Forward<DeleterType>(InDeleter)))
+    {
+        EnableSharedFromThis(this, InObject, InObject);
+    }
+
+    // Constructs a shared pointer using a proxy reference to a raw pointer
+    template<class OtherType>
+    inline SharedPtr(RawPtrProxy<OtherType> const& InRawPtrProxy)
+        : Object(InRawPtrProxy.Object)
+        , sharedReferenceCount(InRawPtrProxy.ReferenceController)
+    {
+        EnableSharedFromThis(this, InRawPtrProxy.Object, InRawPtrProxy.Object);
+    }
+
+    // Constructs a shared pointer as a shared reference to an exisiting shared pointers object
+    // Required to implicitly upcast to a base class
+    template<class OtherType>
+    inline SharedPtr(SharedPtr<OtherType> const& InSharedPtr)
+        : Object(InSharedPtr.Object)
+        , SharedReferenceCount(InSharedPtr.SharedReferenceCount)
+    {}
+
+    inline SharedPtr(SharedPtr const& InSharedPtr)
+        : Object(InSharedPtr.Object)
+        , SharedReferenceCount(InSharedPtr.SharedReferenceCount)
+    { }
+
+    inline SharedPtr(SharedPtr&& InSharedPtr)
+        : Object(InSharedPtr.Object)
+        , SharedReferenceCount(MoveTemp(InSharedPtr.SharedReferenceCount))
+    { 
+        InSharedPtr.Object = nullptr;
+    }
+
+    // Implicitly converts a shared reference to a shared pointer, adding a reference to the object
+    // Allows implict conversion from a SharedRef to a SharedPtr because it's always safe
+    template<class OtherType>
+    inline SharedPtr(SharedRef<OtherType> const& InSharedRef)
+        : Object(InSharedRef.Object)
+        , SharedReferenceCount(InSharedRef.SharedReferenceCount)
+    {
+        // Does not steal the pointer from the SharedRef as that would leave it null, invalidating it
+    }
+
+    // Special constructor used internally statically cast one shared pointer to another
+    // Do not call this directly, instead use StaticCastSharedPtr
+    // Creates a shared pointer as a shared reference to an existing shared pointer after
+    // statically casting that pointer's object
+    template<class OtherType>
+    inline SharedPtr(SharedPtr<OtherType> const& InSharedPtr, StaticCastTag)
+        : Object(static_cast<ObjectType*>(InSharedPtr.Object))
+        , SharedReferenceCount(InSharedPtr.SharedReferenceCount)
+    { }
+
+    // Special constructor used internally to cast a const shared pointer to a mutable pointer
+    // Do not call this directly, instead use ConstCastSharedPtr
+    // Creates a shared pointer as a shared reference to an existing shared pointer after
+    // const casting that pointer's object
+    template<class OtherType>
+    inline SharedPtr(SharedPtr<OtherType> const& InSharedPtr, ConstCastTag)
+        : Object(const_cast<ObjectType*>(InSharedPtr.Object))
+        , SharedReferenceCount(InSharedPtr.SharedReferenceCount)
+    { }
+
+    // Special constructor used internally to create a shared pointer from an exisiting shared pointer,
+    // while using the specified object pointer instead of the incoming shared pointer's object pointer
+    template<class OtherType>
+    inline SharedPtr(SharedPtr<OtherType> const& OtherSharedPtr, ObjectType* InObject)
+        : Object(InObject)
+        , SharedReferenceCount(OtherSharedPtr.SharedReferenceCount)
+    { }
+
+    // Asigned to a nullptr pointer
+    // The object reference by this shared pointer will no longer be reference 
+    // and deleted if there are no other references
+    inline SharedPtr& operator=(NullTag*)
+    {
+        Reset();
+        return *this;
+    }
+
+    // Assignment operator replaces this shared pointer with the specified shared pointer
+    // The object currently reference by this shared pointer will no longer be referenced and will
+    // be deleted if there are no other referencers.
+    inline SharedPtr& operator=(SharedPtr const& InSharedPtr)
+    {
+        SharedReferenceCount = InSharedPtr.SharedReferenceCount;
+        Object = InSharedPtr.Object;
+        return *this;
+    }
+
+    inline SharedPtr& operator=(SharedPtr&& InSharedPtr)
+    {
+        if (this != &InSharedPtr)
+        {
+            Object = InSharedPtr.Object;
+            InSharedPtr.Object = nullptr;
+            SharedReferenceCount = MoveTemp(InSharedPtr.SharedReferenceCount);
+        }
+        return *this;
+    }
+
+    // Assignment operator replaces this shared pointer with the specified shared pointer
+    // The object currently referenced by this shared pointer will no longer be reference and will 
+    // be deleted if there are no other referencers
+    template<class OtherType>
+    inline SharedPtr& operator=(RawPtrProxy<OtherType> const& InRawPtrProxy)
+    {
+        *this = SharedPtr<ObjectType>(InRawPtrProxy);
+        return *this;
+    }
+
+    // Converts a shared pointer to a shared reference, pointer must be valid
+    inline SharedRef<ObjectType> ToSharedRef() const
+    {
+        // Assert IsValid()
+        return SharedRef<ObjectType>(*this);
+    }
+
+    // Returns the object referenced by this pointer, or nullptr if there is no object
+    inline ObjectType* Get() const
+    {
+        return Object;
+    }
+
+    // Checks to see if this shared pointer is actually pointing to an object
+    inline const bool IsValid() const
+    {
+        return Object != nullptr;
+    }
+
+    // Dereference operator returns a reference to the object this shared pointer points to
+    inline typename MakeReferenceTo<ObjectType>::Type operator*() const
+    {
+        // Assert IsValid()
+        return *Object;
+    }
+
+    // Arrow operator returns a pointer to the object this shared pointer references
+    inline ObjectType* operator->() const
+    {
+        // Assert IsValid()
+        return Object;
+    }
+
+    // Resets this shared pointer, removing a reference to the object
+    // If there are no other shared references to the object then it will be destroyed
+    inline void Reset()
+    {
+        *this = SharedPtr<ObjectType>();
+    }
+
+    // Returns the number of shared references to this object, including itself
+    // No fast, for debugging
+    inline const int32_t GetSharedReferenceCount() const
+    {
+        return SharedReferenceCount.GetSharedReferenceCount();
+    }
+
+    // Returns true if this is the only shared reference to this object, no including weak references
+    // Not fast, for debugging
+    inline const bool IsUnique() const
+    {
+        return SharedReferenceCount.IsUnique();
+    }
+
+private:
+    // Constructs a shared pointer from a weak point, allowing you to access the object as long as it
+    // hasn't expired.
+    // Private to force users to be explicit when converting. Use Weak Pointers Pin() method instead
+    template<class OtherType>
+    inline explicit SharedPtr(WeakPtr<OtherType> const& InWeakPtr)
+        : Object(nullptr)
+        , SharedReferenceCount(InWeakPtr.WeakReferenceCount)
+    {
+        if (SharedReferenceCount.IsValid())
+        {
+            Object = InWeakPtr.Object;
+        }
+    }
+
+    template<class OtherType> friend class SharedPtr;
+    template<class OtherType> friend class SharedRef;
+    template<class OtherType> friend class WeakPtr;
+    template<class OtherType> friend class SharedFromThis;
+
+private:
+    ObjectType* Object;
+    SharedReferencer SharedReferenceCount;
+};
+
+template<class ObjectType> struct IsZeroConstructType<SharedPtr<ObjectType> > { enum { Value = true }; };
+
+// WeakPtr is a non-intrusive reference counted weak object pointer
+template<class ObjectType>
+class WeakPtr
+{
+public:
+    // Constructs an empty weakptr
+    inline WeakPtr(NullTag* = nullptr)
+        : Object(nullptr)
+        , WeakReferenceCount()
+    { }
+
+    // Constructs a weak pointer from a shared reference
+    template<class OtherType>
+    inline WeakPtr(SharedRef<OtherType> const& InSharedRef)
+        : Object(InSharedRef.Object)
+        , WeakReferenceCount(InSharedRef.SharedReferenceCount)
+    { }
+
+    // Constructs a weak pointer from a shared pointer
+    template<class OtherType>
+    inline WeakPtr(SharedPtr<OtherType> const& InSharedPtr)
+        : Object(InSharedPtr.Object)
+        , WeakReferenceCount(InSharedPtr.SharedReferenceCount)
+    { }
+
+    // Constructs a weak point from a weak pointer fo another type
+    // Allows derived-to-base conversions
+    template<class OtherType>
+    inline WeakPtr(WeakPtr<OtherType> const& InWeakPtr)
+        : Object(InWeakPtr.Object)
+        , WeakReferenceCount(InWeakPtr.WeakReferenceCount)
+    { }
+
+    template<class OtherType>
+    inline WeakPtr(WeakPtr<OtherType>&& InWeakPtr)
+        : Object(InWeakPtr.Object)
+        , WeakReferenceCount(MoveTemp(InWeakPtr.WeakReferenceCount))
+    {
+        InWeakPtr.Object = nullptr;
+    }
+
+    inline WeakPtr(WeakPtr const& InWeakPtr)
+        : Object(InWeakPtr.Object)
+        , WeakReferenceCount(InWeakPtr.WeakReferenceCount)
+    { }
+
+    inline WeakPtr(WeakPtr&& InWeakPtr)
+        : Object(InWeakPtr.Object)
+        , WeakReferenceCount(MoveTemp(InWeakPtr.WeakReferenceCount))
+    {
+        InWeakPtr.Object = nullptr;
+    }
+
+    // Assigned to a nullptr pointer, clears the weak pointer's reference
+    inline WeakPtr& operator=(NullTag*)
+    {
+        Reset();
+        return *this;
+    }
+
+    // Assignment operator adds a weak reference to the object referenced by the specified weak pointer
+    inline WeakPtr& operator=(WeakPtr const& InWeakPtr)
+    {
+        Object = InWeakPtr.Pin.Get();
+        WeakReferenceCount = InWeakPtr.WeakReferenceCount;
+        return *this;
+    }
+
+    inline WeakPtr& operator=(WeakPTr&& InWeakPtr)
+    {
+        if (this != &InWeakPtr)
+        {
+            Object = InWeakPtr.Object;
+            InWeakPtr.Object = nullptr;
+            WeakReferenceCount = MoveTemp(InWeakPtr.WeakReferenceCount);
+        }
+        return *this;
+    }
+    // Assignment operator adds a weak reference to the object referenced byt he specified weak pointer
+    // Intended to allow derived-to-base conversions
+    template<typename OtherType>
+    inline WeakPtr& operator=(WeakPtr<OtherType> const& InWeakPtr)
+    {
+        Object = InWeakPtr.Pin().Get();
+        WeakReferenceCount = InWeakPtr.WeakReferenceCount;
+        return *this;
+    }
+
+    template<typename OtherType>
+    inline WeakPtr& operator=(WeakPtr<OtherType>&& InWeakPtr)
+    {
+        Object = InWeakPtr.Object;
+        InWeakPtr.Object = nullptr;
+        WeakReferenceCount = MoveTemp(InWeakPtr.WeakReferenceCount);
+        return *this;
+    }
+
+    // Assignment operator sets this weak pointer from a shared reference
+    template<class OtherType>
+    inline WeakPtr& operator=(SharedRef<OtherType> const& InSharedRef)
+    {
+        Object = InSharedRef.Object;
+        WeakReferenceCount = InSharedRef.SharedReferenceCount;
+        return *this;
+    }
+
+    // Assignment operator sets this weak pointer from a shared pointer
+    template<class OtherType>
+    inline WeakPtr& operator=(SharedPtr<OtherType> const& InSharedPtr)
+    {
+        Object InSharedPTr.Object;
+        WeakReferenceCount = InSharedPtr.SharedReferenceCount;
+        return *this;
+    }
+
+    // Converts this weak pointer to a shared pointer that you can used to access the object
+    // Object must have no expired, ensure SharedPtr is valid before using
+    inline SharedPtr<ObjectType> Pin() const
+    {
+        return SharedPtr<ObjectType>(*this);
+    }
+
+    // Checks to see if the weak pointer actually has a valid reference to an object
+    inline const bool IsValid() const
+    {
+        return Object != nullptr && WeakReferenceCount.IsValid();
+    }
+
+    // Resets this weak pointer, removing a weak reference to the object
+    // If there are no other shared or weak references to the object then the object will be destroyed
+    inline void Reset()
+    {
+        *this = WeakPtr<ObjectType>();
+    }
+
+    // Returns true if the object this weak pointer points to is the same as the specified object pointer
+    inline bool HasSameObject(const void* InOtherPtr) const
+    {
+        return Pin().Get() == InOtherPtr;
+    }
+
+private:
+    template<class OtherType> friend class WeakPtr;
+    template<class OtherType> friend class SharedPtr;
+
+    ObjectType* Object;
+    WeakReferencer WeakReferenceCount;
+};
