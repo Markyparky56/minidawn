@@ -1046,3 +1046,196 @@ protected:
 private:
     mutable WeakPtr<ObjectType> WeakThis;
 };
+
+// Global equality operator for SharedRef
+template<class ObjectTypeA, class ObjectTypeB>
+inline bool operator==(SharedRef<ObjectTypeA> const& InSharedRefA, SharedRef<ObjectTypeB> const& InSharedRefB)
+{
+    return &(InSharedRefA.Get()) == &(InSharedRefB.Get());
+}
+
+// Global inequality operator for SharedRef
+template<class ObjectTypeA, class ObjectTypeB>
+inline bool operator!=(SharedRef<ObjectTypeA> const& InSharedRefA, SharedRef<ObjectTypeB> const& InSharedRefB)
+{
+    return &(InSharedRefA.Get()) != &(InSharedRefB.Get());
+}
+
+// Global equality operator for SharedPtr
+template<class ObjectTypeA, class ObjectTypeB>
+inline bool operator==(SharedPtr<ObjectTypeA> const& InSharedPtrA, SharedPtr<ObjectTypeB> const& InSharedPtrB)
+{
+    return InSharedPtrA.Get() == InSharedPtrB.Get();
+}
+
+// Global inequality operator for SharedPtr
+template<class ObjectTypeA, class ObjectTypeB>
+inline bool operator!=(SharedPtr<ObjectTypeA> const& InSharedPtrA, SharedPtr<ObjectTypeB> const& InSharedPtrB)
+{
+    return InSharedPtrA.Get() != InSharedPtrB.Get();
+}
+
+// Tests to see if a SharedRef is "equal" to a SharedPtr (both are valid and refer to the same object)
+template<class ObjectTypeA, class ObjectTypeB>
+inline bool operator==(SharedRef<ObjectTypeA> const& InSharedRef, SharedPtr<ObjectTypeB> const& InSharedPtr)
+{
+    return InSharedPtr.IsValid() && InSharedPtr.Get() == &(InSharedRef.Get());
+}
+
+// Tests to see if a SharedRef is no "equal" to a SharedPtr (shared pointer is invalid or refer to different objects)
+template<class ObjectTypeA, class ObjectTypeB>
+inline bool operator!=(SharedRef<ObjectTypeA> const& InSharedRef, SharedPtr<ObjectTypeB> const& InSharedPtr)
+{
+    return !InSharedPtr.IsValid() || (InSharedPtr.Get() != &(InSharedRef.Get()));
+}
+
+// Tests to see if a SharedRef is "equal" to a SharedPtr (both are valid and refer to the same object) (reverse)
+template<class ObjectTypeA, class ObjectTypeB>
+inline bool operator==(SharedPtr<ObjectTypeB> const& InSharedPtr, SharedRef<ObjectTypeA> const& InSharedRef)
+{
+    return InSharedRef == InSharedPtr;
+}
+
+// Tests to see if a SharedRef is not "equal" to a SharedPtr (shared pointer is invalid or refer to different objects) (reverse)
+template<class ObjectTypeA, class ObjectTypeB>
+inline bool operator!=(SharedPtr<ObjectTypeB> const& InSharedPtr, SharedRef<ObjectTypeA> const& InSharedRef)
+{
+    return InSharedRef != InSharedPtr;
+}
+
+// Global equality operators for WeakPtr
+
+// WeakPtr == WeakPtr
+template<class ObjectTypeA, class ObjectTypeB>
+inline bool operator==(WeakPtr<ObjectTypeA> const& InWeakPtrA, WeakPtr<ObjectTypeB> const& InWeakPtrB)
+{
+    return InWeakPtrA.Pin().Get() == InWeakPtrB.Pin().Get();
+}
+
+// WeakPtr == SharedRef
+template<class ObjectTypeA, class ObjectTypeB>
+inline bool operator==(WeakPtr<ObjectTypeA> const& InWeakPtrA, SharedRef<ObjectTypeB> const& InSharedRefB)
+{
+    return InWeakPtrA.Pin().Get() == &InSharedRefB.Get();
+}
+
+// WeakPtr == SharedPtr
+template<class ObjectTypeA, class ObjectTypeB>
+inline bool operator==(WeakPtr<ObjectTypeA> const& InWeakPTrA, SharedPtr<ObjectTypeB> const& InSharedPtrB)
+{
+    return InWeakPTrA.Pin().Get() == InSharedPtrB.Get();
+}
+
+// SharedRef == WeakPtr
+template<class ObjectTypeA, class ObjectTypeB>
+inline bool operator==(SharedRef<ObjectTypeA> const& InSharedRefA, WeakPtr<ObjectTypeB> const& InWeakPtrB)
+{
+    return &InSharedRefA.Get() == InWeakPtrB.Pin().Get();
+}
+
+// SharedPtr == WeakPtr
+template<class ObjectTypeA, class ObjectTypeB>
+inline bool operator==(SharedPtr<ObjectTypeA> const& InSharedPtrA, WeakPtr<ObjectTypeB> const& InWeakPtrB)
+{
+    return InSharedPtrA.Get() == InWeakPtrB.Pin().Get();
+}
+
+// WeakPtr == nullptr
+template<class ObjectTypeA>
+inline bool operator==(WeakPtr<ObjectTypeA> const& InWeakPtrA, decltype(nullptr))
+{
+    return !InWeakPtrA.IsValid();
+}
+
+// nullptr == WeakPtr
+template<class ObjectTypeB>
+inline bool operator==(decltype(nullptr), WeakPtr<ObjectTYpeB> const& InWeakPtrB)
+{
+    return !InWeakPTrB.IsValid();
+}
+
+// WeakPtr != WeakPTr
+template<class ObjectTypeA class ObjectTypeB>
+inline bool operator!=(WeakPtr<ObjectTypeA> const& InWeakPtrA, WeakPtr<ObjectTypeB> const& InWeakPtrB)
+{
+    return InWeakPtrA.Pin().Get() != InWeakPtrB.Pin().Get();
+}
+
+// WeakPtr != SharedRef
+template<class ObjectTypeA, class ObjectTypeB>
+inline bool operator!=(WeakPtr<ObjectTypeA> const& InWeakPtrA, SharedRef<ObjectTypeB> const& InSharedRefB)
+{
+    return InWeakPtrA.Pin().Get() != &InSharedRefB.Get();
+}
+
+// WeakPtr != SharedPtr
+template<class ObjectTypeA, class ObjectTypeB>
+inline bool operator !=(WeakPtr<ObjectTypeA> const& InWeakPtrA, SharedRef<ObjectTypeB> const& InSharedPtrB)
+{
+    return InWeakPtrA.Pin().Get() != InSharedPtrB.Get();
+}
+
+// SharedRef != WeakPtr
+template<class ObjectTypeA, class ObjectTypeB>
+inline bool operator!=(SharedRef<ObjectTypeA> const& InSharedRefA, WeakPtr<ObjectTypeB> const& InWeakPtrB)
+{
+    return &InSharedRefA.Get() != InWeakPtrB.Pin().Get();
+}
+
+// SharedPtr != WeakPtr
+template<class ObjectTypeA, class ObjectTypeB>
+inline bool operator!=(SharedPtr<ObjectTypeA> const& InSharedPtrA, WeakPtr<ObjectTypeB> const& InWeakPtrB)
+{
+    return InSharedPtrA.Get() != InWeakPtrB.Pin().Get();
+}
+
+// WeakPtr != nullptr
+template<class ObjectTypeA>
+inline bool operator!=(WeakPtr<ObjectTypeA> const& InWeakPtrA, decltype(nullptr))
+{
+    return InWeakPtrA.IsValid();
+}
+
+// nullptr != WeakPtr
+template<class ObjectTypeB>
+inline bool operator!=(decltype(nullptr), WeakPtr<ObjectTypeB> const& InWeakPtrB)
+{
+    return InWeakPtrB.IsValid();
+}
+
+// Casts a shared pointer of one type to another stype
+// Useful for down-casting
+template<class CastToType, class CastFromType>
+inline SharedPtr<CastToType> StaticCastSharedPtr(SharedPtr<CastFromType> const& InSharedPtr)
+{
+    return SharedPtr<CastToType>(InSharedPtr, StaticCastTag());
+}
+
+// Casts a const shared reference to mutable shared reference
+template<class CastToType, class CastFromType>
+inline SharedRef<CastToType> ConstCastSharedRef(SharedRef<CastFromType> const& InSharedRef)
+{
+    return SharedRef<CastToType>(InSharedRef, ConstCastTag());
+}
+
+// Casts a const shared pointer to a mutable shared pointer
+template<class CastToType, class CastFromType>
+inline SharedPtr<CastToType> ConstCastSharedPtr(SharedPtr<CastFromType> const& InSharedPtr)
+{
+    return SharedPtr<CastToType>(InSharedPtr, ConstCastTag());
+}
+
+// MakeSharebale utility function
+// Weap object pointers with MakeShareabale to allow the them to be implicitly
+// converted to shared pointers
+template<class ObjectType>
+inline RawPtrProxy<ObjectType> MakeShareable(ObjectType* InObject)
+{
+    return RawPtrProxy<ObjectType>(InObject);
+}
+
+template<class ObjectType, class DeleterType>
+inline RawPtrProxy<ObjectType> MakeShareable(ObjectType* InObject, DeleterType&& InDeleter)
+{
+    return RawPtrProxy<ObjectType>(InObject, Forward<DeleterType>(InDeleter));
+}
