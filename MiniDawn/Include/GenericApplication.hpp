@@ -1,18 +1,19 @@
 #pragma once
-#include <memory> 
+#include "SharedRef.hpp"
 #include "GenericMessageHandler.hpp"
-
-using std::shared_ptr;
 
 class GenericApplication
 {
 public:
-    GenericApplication() {}
+    GenericApplication() 
+        : MessageHandler(MakeShareable(new GenericMessageHandler()))
+    {
+    }
     virtual ~GenericApplication() {}
 
     // Message handler
-    virtual void setMessageHandler(const shared_ptr<GenericMessageHandler>& _messageHandler) { MessageHander = _messageHandler; }
-    virtual shared_ptr<GenericMessageHandler> getMessageHandler() { return MessageHandler; }
+    virtual void setMessageHandler(const SharedRef<GenericMessageHandler>& _messageHandler) { MessageHandler = _messageHandler; }
+    virtual SharedRef<GenericMessageHandler> getMessageHandler() { return MessageHandler; }
     // Window creation
 
     // Tick
@@ -22,5 +23,5 @@ public:
 protected:
     // Message Handler
     
-    shared_ptr<GenericMessageHandler> MessageHandler;
+    SharedRef<class GenericMessageHandler> MessageHandler;
 };

@@ -1,5 +1,7 @@
 #include "GMiniDawnEngineLoop.hpp"
 
+MiniDawnEngineLoop GEngineLoop;
+
 MiniDawnEngineLoop::MiniDawnEngineLoop()
 {
 }

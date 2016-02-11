@@ -13,4 +13,4 @@ public:
 
 private:
 
-} GEngineLoop; // Shorter name for sanity
+};

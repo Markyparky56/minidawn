@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-#include "GenericWindow.hpp"
+#include "GenericApplication.hpp"
 #if defined(PLATFORM_WINDOWS)
     #include "WindowsWindow.hpp"
 #endif
@@ -29,4 +29,4 @@ private:
     // scenes
     //renderer
 
-} GMiniDawnEngine;
+};

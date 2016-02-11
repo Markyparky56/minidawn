@@ -36,6 +36,7 @@
     <ClInclude Include="Include\MiniDawn.hpp" />
     <ClInclude Include="Include\GMiniDawnEngine.hpp" />
     <ClInclude Include="Include\SharedRef.hpp" />
+    <ClInclude Include="Include\SharedRefInternals.hpp" />
     <ClInclude Include="Include\WindowsWindow.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

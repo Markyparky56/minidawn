@@ -74,5 +74,8 @@
     <ClInclude Include="Include\SharedRef.hpp">
       <Filter>Header Files\Templates</Filter>
     </ClInclude>
+    <ClInclude Include="Include\SharedRefInternals.hpp">
+      <Filter>Header Files\Templates</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

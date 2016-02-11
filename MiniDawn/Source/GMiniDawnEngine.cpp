@@ -1,5 +1,8 @@
 #include "GMiniDawnEngine.hpp"
 
+extern MiniDawnEngineLoop GEngineLoop;
+MiniDawnEngine GMiniDawnEngine;
+
 // We don't want to do anything in the constructor and destructor so we can
 // manage the creation and destruction of objects manually via init/exit
 MiniDawnEngine::MiniDawnEngine()

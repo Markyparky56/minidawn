@@ -4,3 +4,6 @@
 #endif
 
 #include "GMiniDawnEngine.hpp"
+
+extern MiniDawnEngineLoop GEngineLoop;
+extern MiniDawnEngine GMiniDawnEngine;
