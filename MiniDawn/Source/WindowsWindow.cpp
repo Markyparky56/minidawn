@@ -17,13 +17,13 @@ void WindowsWindow::Register(void * hInstance)
     wcex.lpfnWndProc = WndProc;
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = 0;
-    wcex.hInstance = static_cast<HINSTANCE>(hInstance);
-    wcex.hIcon = static_cast<HICON>(hIcon);
-    wcex.hCursor = static_cast<HCURSOR>(hCursor);
-    wcex.hbrBackground = static_cast<HBRUSH>(hbrBackground);
+    wcex.hInstance = reinterpret_cast<HINSTANCE>(hInstance);
+    wcex.hIcon = reinterpret_cast<HICON>(hIcon);
+    wcex.hCursor = reinterpret_cast<HCURSOR>(hCursor);
+    wcex.hbrBackground = reinterpret_cast<HBRUSH>(hbrBackground);
     wcex.lpszMenuName = menuName;
     wcex.lpszClassName = className;
-    wcex.hIconSm = static_cast<HICON>(hIconSm);
+    wcex.hIconSm = reinterpret_cast<HICON>(hIconSm);
 
     RegisterClassEx(&wcex);
 }
@@ -41,9 +41,9 @@ int WindowsWindow::Initialise(void * hInstance, int nCmdShow)
                     yPos, 
                     width, 
                     height, 
-                    static_cast<HWND>(parent), 
-                    static_cast<HMENU>(menu), 
-                    static_cast<HINSTANCE>(hInstance), 
+                    reinterpret_cast<HWND>(parent),
+                    reinterpret_cast<HMENU>(menu),
+                    reinterpret_cast<HINSTANCE>(hInstance),
                     param
                 )
             );
@@ -51,8 +51,8 @@ int WindowsWindow::Initialise(void * hInstance, int nCmdShow)
     {
         return FALSE;
     }
-    ShowWindow(static_cast<HWND>(hwnd), nCmdShow);
-    UpdateWindow(static_cast<HWND>(hwnd));
+    ShowWindow(reinterpret_cast<HWND>(hwnd), nCmdShow);
+    UpdateWindow(reinterpret_cast<HWND>(hwnd));
     return TRUE;
 }
 
@@ -79,8 +79,8 @@ void WindowsWindow::setCursor(void * newCursor)
 void WindowsWindow::setBackground(void * newBackground)
 {
     hbrBackground = newBackground;
-    SetClassLongPtr(static_cast<HWND>(hwnd), GCLP_HBRBACKGROUND, reinterpret_cast<LONG>(newBackground));
-    InvalidateRect(static_cast<HWND>(hwnd), 0, TRUE); // Force redraw
+    SetClassLongPtr(reinterpret_cast<HWND>(hwnd), GCLP_HBRBACKGROUND, reinterpret_cast<LONG>(newBackground));
+    InvalidateRect(reinterpret_cast<HWND>(hwnd), 0, TRUE); // Force redraw
 }
 
 void WindowsWindow::setMenuName(wchar_t * newMenuName)
@@ -141,7 +141,7 @@ void WindowsWindow::setParam(void * newParam)
 void WindowsWindow::updateTitle(wchar_t* newTitle)
 {
 
-    SetWindowText(static_cast<HWND>(hwnd), newTitle);
+    SetWindowText(reinterpret_cast<HWND>(hwnd), newTitle);
 }
 
 static LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)

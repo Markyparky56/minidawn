@@ -13,10 +13,10 @@ MiniDawnEngineLoop::~MiniDawnEngineLoop()
 int MiniDawnEngineLoop::Tick()
 {
     int error = 0;
-    while (true)
-    {
-// TODO: Move this to an application class
-
+//    while (true)
+//    {
+//// TODO: Move this to an application class
+//
 //        // Process system messages
 //#if defined(PLATFORM_WINDOWS)
 //        MSG msg;
@@ -69,6 +69,6 @@ int MiniDawnEngineLoop::Tick()
 //            // Render
 //            
 //        }
-    }
+//    }
     return 0;
 }

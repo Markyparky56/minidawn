@@ -40,10 +40,11 @@ int MiniDawnEngine::Init()
     wnd->setStyle(CS_HREDRAW | CS_VREDRAW);
     wnd->setIcon(0);
     wnd->setCursor(LoadCursor(NULL, IDC_ARROW));
-    wnd->setBackground(NULL);
+    wnd->setBackground(reinterpret_cast<void*>(CreateSolidBrush(RGB(255, 0, 255))));
     wnd->setClassName(L"WindowClass");
+    wnd->setMenuName(NULL);
     wnd->setSmallIcon(0);
-
+    
     wnd->setTitle(L"MiniDawn");
     wnd->setWndStyle(WS_OVERLAPPEDWINDOW);
     wnd->setXPos(CW_USEDEFAULT);
