@@ -6,6 +6,8 @@
 #endif
 #include "GMiniDawnEngineLoop.hpp"
 
+class MiniDawnEngineLoop;
+
 class MiniDawnEngine
 {
 public:

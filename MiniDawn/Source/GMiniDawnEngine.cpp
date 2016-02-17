@@ -34,6 +34,7 @@ int MiniDawnEngine::PreInit()
 
 int MiniDawnEngine::Init()
 {
+    // This should be moved to the application
 #if defined(PLATFORM_WINDOWS)
     void* hInstance = GetModuleHandle(NULL);
 
@@ -75,6 +76,7 @@ int MiniDawnEngine::Tick()
     else if (requestingEnd) 
     { 
         isRunning = false; 
+        error = Exit(); // Maybe?
         return error; 
     }
     error = GEngineLoop.Tick();
@@ -84,6 +86,7 @@ int MiniDawnEngine::Tick()
 int MiniDawnEngine::Exit()
 {
     // Scene shutdown?
+    // Application shutdown?
     // Loop cleanup?
     return 0;
 }

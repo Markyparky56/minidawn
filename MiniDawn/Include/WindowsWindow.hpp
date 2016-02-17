@@ -2,8 +2,6 @@
 #include <Windows.h>
 #include "GenericWindow.hpp"
 
-static LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
-
 class WindowsWindow : public GenericWindow
 {
 public:
@@ -32,6 +30,7 @@ public:
     void setParam(void* newParam) override;
 
     void updateTitle(wchar_t* newTitle) override;
+
 
 private:
 

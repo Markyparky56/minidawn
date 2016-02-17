@@ -3,6 +3,10 @@
     #include <Windows.h>
 #endif
 #include <thread>
+#include "GMiniDawnEngine.hpp"
+
+class MiniDawnEngine;
+
 class MiniDawnEngineLoop
 {
 public:

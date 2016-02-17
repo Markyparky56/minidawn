@@ -14,7 +14,7 @@ void WindowsWindow::Register(void * hInstance)
 
     wcex.cbSize = sizeof(wcex);
     wcex.style = classStyle;
-    wcex.lpfnWndProc = WndProc;
+    wcex.lpfnWndProc = AppWndProc;
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = 0;
     wcex.hInstance = reinterpret_cast<HINSTANCE>(hInstance);
@@ -142,9 +142,4 @@ void WindowsWindow::updateTitle(wchar_t* newTitle)
 {
 
     SetWindowText(reinterpret_cast<HWND>(hwnd), newTitle);
-}
-
-static LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-    return DefWindowProc(hwnd, message, wParam, lParam);
 }

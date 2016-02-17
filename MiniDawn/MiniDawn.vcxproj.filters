@@ -45,6 +45,9 @@
     <ClCompile Include="Source\GMiniDawnEngineLoop.cpp">
       <Filter>Source Files\Globals</Filter>
     </ClCompile>
+    <ClCompile Include="WindowsApplication.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\MiniDawn.hpp">
@@ -76,6 +79,9 @@
     </ClInclude>
     <ClInclude Include="Include\SharedRefInternals.hpp">
       <Filter>Header Files\Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowsApplication.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
