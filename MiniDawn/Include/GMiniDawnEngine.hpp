@@ -1,8 +1,8 @@
 #pragma once
-#include <memory>
+#include "SharedRef.hpp"
 #include "GenericApplication.hpp"
 #if defined(PLATFORM_WINDOWS)
-    #include "WindowsWindow.hpp"
+    #include "WindowsApplication.hpp"
 #endif
 #include "GMiniDawnEngineLoop.hpp"
 
@@ -25,10 +25,11 @@ private:
     bool isRunning;
     bool requestingEnd;
 
-    pWindow wnd; 
+    SharedPtr<GenericApplication> Application;
     // Timer
     // Input handler
     // scenes
-    //renderer
-
+    // renderer
 };
+
+extern MiniDawnEngine GMiniDawnEngine;

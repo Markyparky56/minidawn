@@ -1,5 +1,6 @@
 #include "MiniDawn.hpp"
-// Maybe inspired by UE4... slightly, but no copy-pasting!
+// Maybe inspired by UE4... Considerably, but no copy-pasting!
+
 // Define a platform independent main function which is called by the various entry points
 // Returns an error code back to the entry point, if there are errors
 #if defined(PLATFORM_WINDOWS)

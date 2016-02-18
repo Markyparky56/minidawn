@@ -6,7 +6,7 @@
 template< class CastToType, class CastFromType>
 inline SharedRef<CastToType> StaticCastSharedRef(SharedRef< CastFromType > const& InSharedRef)
 {
-    return SharedRef<CastToType>(InSharedRef, FStaticCastTag)
+    return SharedRef<CastToType>(InSharedRef, StaticCastTag());
 }
 
 // SharedRef is non-nullable
@@ -241,10 +241,10 @@ public:
     // Constructs a shared pointer using a proxy reference to a raw pointer
     template<class OtherType>
     inline SharedPtr(RawPtrProxy<OtherType> const& InRawPtrProxy)
-        : Object(InRawPtrProxy.Object)
-        , sharedReferenceCount(InRawPtrProxy.ReferenceController)
+        : Object(InRawPtrProxy.object)
+        , SharedReferenceCount(InRawPtrProxy.ReferenceController)
     {
-        EnableSharedFromThis(this, InRawPtrProxy.Object, InRawPtrProxy.Object);
+        EnableSharedFromThis(this, InRawPtrProxy.object, InRawPtrProxy.object);
     }
 
     // Constructs a shared pointer as a shared reference to an exisiting shared pointers object
@@ -572,7 +572,7 @@ private:
     template<class OtherType> friend class SharedPtr;
 
     ObjectType* Object;
-    WeakReferencer WeakReferenceCount;
+    WeakReferencer<ESPMode::Fast> WeakReferenceCount;
 };
 
 //template<class T> struct IsWeakPointerType<WeakPtr<T> > { enum {Value = true }; };

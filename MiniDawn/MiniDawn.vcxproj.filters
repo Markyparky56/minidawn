@@ -22,11 +22,20 @@
     <Filter Include="Header Files\Templates">
       <UniqueIdentifier>{e2e14cae-e964-4330-a0d2-2b56bd83e2a1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Generic">
+      <UniqueIdentifier>{2aa12872-f063-4fd5-9e13-cadf734a2055}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Windows">
+      <UniqueIdentifier>{8b867384-2f74-4156-85f7-57b8fb7257f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Generic">
+      <UniqueIdentifier>{73da2450-bfc8-4ea9-a4da-8e226529303f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Windows">
+      <UniqueIdentifier>{5e0da27f-7100-4c67-b30e-dc44fd4d7a1f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\WinMain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\GErrorHandler.cpp">
       <Filter>Source Files\Globals</Filter>
     </ClCompile>
@@ -36,17 +45,23 @@
     <ClCompile Include="Source\DawnMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GenericWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\WindowsWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\GMiniDawnEngineLoop.cpp">
       <Filter>Source Files\Globals</Filter>
     </ClCompile>
-    <ClCompile Include="WindowsApplication.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Source\GenericWindow.cpp">
+      <Filter>Source Files\Generic</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\WindowsApplication.cpp">
+      <Filter>Source Files\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\WindowsWindow.cpp">
+      <Filter>Source Files\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\WinMain.cpp">
+      <Filter>Source Files\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="GenericMemory.cpp">
+      <Filter>Source Files\Generic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -62,26 +77,32 @@
     <ClInclude Include="Include\GMiniDawnEngineLoop.hpp">
       <Filter>Header Files\Globals</Filter>
     </ClInclude>
-    <ClInclude Include="Include\GenericWindow.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\WindowsWindow.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\GenericApplication.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\GenericMessageHandler.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Include\SharedRef.hpp">
       <Filter>Header Files\Templates</Filter>
     </ClInclude>
     <ClInclude Include="Include\SharedRefInternals.hpp">
       <Filter>Header Files\Templates</Filter>
     </ClInclude>
-    <ClInclude Include="WindowsApplication.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Include\GenericWindow.hpp">
+      <Filter>Header Files\Generic</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\GenericApplication.hpp">
+      <Filter>Header Files\Generic</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\GenericMessageHandler.hpp">
+      <Filter>Header Files\Generic</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\WindowsApplication.hpp">
+      <Filter>Header Files\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\WindowsWindow.hpp">
+      <Filter>Header Files\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\GenericWindowDefinition.hpp">
+      <Filter>Header Files\Generic</Filter>
+    </ClInclude>
+    <ClInclude Include="GenericMemory.hpp">
+      <Filter>Header Files\Generic</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

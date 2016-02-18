@@ -18,11 +18,10 @@ int MiniDawnEngine::PreInit()
     isRunning = false;
     // Init timer
 
-    // create window
+    // create Application
 #if defined(PLATFORM_WINDOWS)
-    wnd = std::make_unique<WindowsWindow>();
+    Application = MakeShareable(WindowsApplication::CreateApplication(GetModuleHandle(NULL), NULL));
 #endif
-    //TODO: other window types
 
     // create input handler
 
@@ -36,31 +35,7 @@ int MiniDawnEngine::Init()
 {
     // This should be moved to the application
 #if defined(PLATFORM_WINDOWS)
-    void* hInstance = GetModuleHandle(NULL);
-
-    wnd->setStyle(CS_HREDRAW | CS_VREDRAW);
-    wnd->setIcon(0);
-    wnd->setCursor(LoadCursor(NULL, IDC_ARROW));
-    wnd->setBackground(reinterpret_cast<void*>(CreateSolidBrush(RGB(255, 0, 255))));
-    wnd->setClassName(L"WindowClass");
-    wnd->setMenuName(NULL);
-    wnd->setSmallIcon(0);
-    
-    wnd->setTitle(L"MiniDawn");
-    wnd->setWndStyle(WS_OVERLAPPEDWINDOW);
-    wnd->setXPos(CW_USEDEFAULT);
-    wnd->setYPos(CW_USEDEFAULT);
-    wnd->setWidth(800);
-    wnd->setHeight(600);
-    wnd->setParent(nullptr);
-    wnd->setMenu(nullptr);
-    wnd->setParam(nullptr);
-
-    wnd->Register(hInstance);
-    if (!wnd->Initialise(hInstance, SW_SHOW))
-    {
-        exit(FALSE);
-    }
+    //Application->
 #endif
     // Init Scene?
     return 0;
