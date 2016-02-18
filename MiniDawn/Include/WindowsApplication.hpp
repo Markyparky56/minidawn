@@ -63,5 +63,6 @@ private:
 
     HINSTANCE hInstance;
 
-    std::vector<SharedRef<WindowsWindow>> Windows; // Hypothetically possible to have additional windows
+    //std::vector<SharedRef<WindowsWindow>> Windows; // Hypothetically possible to have additional windows
+    SharedPtr<WindowsWindow> window;
 };

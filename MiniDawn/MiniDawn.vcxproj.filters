@@ -60,7 +60,7 @@
     <ClCompile Include="Source\WinMain.cpp">
       <Filter>Source Files\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="GenericMemory.cpp">
+    <ClCompile Include="Source\GenericMemory.cpp">
       <Filter>Source Files\Generic</Filter>
     </ClCompile>
   </ItemGroup>
@@ -83,9 +83,6 @@
     <ClInclude Include="Include\SharedRefInternals.hpp">
       <Filter>Header Files\Templates</Filter>
     </ClInclude>
-    <ClInclude Include="Include\GenericWindow.hpp">
-      <Filter>Header Files\Generic</Filter>
-    </ClInclude>
     <ClInclude Include="Include\GenericApplication.hpp">
       <Filter>Header Files\Generic</Filter>
     </ClInclude>
@@ -101,7 +98,10 @@
     <ClInclude Include="Include\GenericWindowDefinition.hpp">
       <Filter>Header Files\Generic</Filter>
     </ClInclude>
-    <ClInclude Include="GenericMemory.hpp">
+    <ClInclude Include="Include\GenericMemory.hpp">
+      <Filter>Header Files\Generic</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\GenericWindow.hpp">
       <Filter>Header Files\Generic</Filter>
     </ClInclude>
   </ItemGroup>

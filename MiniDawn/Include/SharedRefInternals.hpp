@@ -51,7 +51,10 @@ struct NullTag {};
 class ReferenceControllerBase
 {
 public:
-    explicit ReferenceControllerBase(void* _Object)
+    explicit ReferenceControllerBase(void* InOject)
+        : SharedReferenceCount(1)
+        , WeakReferenceCount(1)
+        , Object(InOject)
     { }
 
     int32_t SharedReferenceCount;
@@ -169,6 +172,7 @@ struct ReferenceControllerOps
         }
     }
 };
+
 template<ESPMode Mode>
 class WeakReferencer
 {

@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdint> // Probably should make my own type header
+#include "GenericMemory.hpp"
 #include "SharedRefInternals.hpp"
 
 // Cast a shared reference to another type
@@ -103,7 +104,8 @@ public:
 
     inline SharedRef& operator=(SharedRef&& InSharedRef)
     {
-        //TODO: MemSwap stuff
+        Memswap(this, &InSharedRef, sizeof(SharedRef));
+        return *this;
     }
 
     template<class OtherType>

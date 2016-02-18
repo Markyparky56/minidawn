@@ -33,27 +33,27 @@ public:
     //virtual void setMenu(void* newMenu);
     //virtual void setParam(void* newParam);
 
-    inline const void* const getHwnd() { return &hWnd; }
+    inline void* getHwnd() const { return hWnd; }
     virtual void updateTitle(wchar_t* newTitle);
 
 protected:
     void* hWnd;
-
+    SharedPtr<GenericWindowDefinition> definition;
     /*unsigned int classStyle;
     void* hIcon;
     void* hIconSm;
     void* hCursor;
     void* hbrBackground;
     wchar_t* menuName;
-    wchar_t* className;*/
+    wchar_t* className;
 
-    wchar_t* title;
+    //wchar_t* title;
     /*unsigned long wndStyle;
 
     int xPos;
     int yPos;
     int width;
-    int height;*/
+    int height;
 
     /*void* parent;
     void* menu;

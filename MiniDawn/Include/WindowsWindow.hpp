@@ -35,7 +35,8 @@ public:
 
     void updateTitle(wchar_t* newTitle) override;
 
+    static SharedRef<WindowsWindow> Make();
 
 private:
-    SharedPtr<GenericWindowDefinition> definition;
+
 };

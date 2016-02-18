@@ -18,11 +18,6 @@ int MiniDawnEngine::PreInit()
     isRunning = false;
     // Init timer
 
-    // create Application
-#if defined(PLATFORM_WINDOWS)
-    Application = MakeShareable(WindowsApplication::CreateApplication(GetModuleHandle(NULL), NULL));
-#endif
-
     // create input handler
 
     // create renderer
@@ -33,10 +28,9 @@ int MiniDawnEngine::PreInit()
 
 int MiniDawnEngine::Init()
 {
-    // This should be moved to the application
-#if defined(PLATFORM_WINDOWS)
-    //Application->
-#endif
+    GEngineLoop.PreInit();
+    GEngineLoop.Init();
+    GEngineLoop.AppInit();
     // Init Scene?
     return 0;
 }
@@ -51,7 +45,6 @@ int MiniDawnEngine::Tick()
     else if (requestingEnd) 
     { 
         isRunning = false; 
-        error = Exit(); // Maybe?
         return error; 
     }
     error = GEngineLoop.Tick();
@@ -59,10 +52,14 @@ int MiniDawnEngine::Tick()
 }
 
 int MiniDawnEngine::Exit()
-{
+{    
     // Scene shutdown?
     // Application shutdown?
     // Loop cleanup?
+    GEngineLoop.AppPreExit();
+    GEngineLoop.AppExit();
+    GEngineLoop.Exit();    
+
     return 0;
 }
 

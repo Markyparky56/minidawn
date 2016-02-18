@@ -81,6 +81,10 @@ void WindowsWindow::Initialise(const SharedRef<GenericWindowDefinition> & InDefi
 
 void WindowsWindow::updateTitle(wchar_t* newTitle)
 {
-
     SetWindowText(static_cast<HWND>(hWnd), newTitle);
+}
+
+SharedRef<WindowsWindow> WindowsWindow::Make()
+{
+    return MakeShareable(new WindowsWindow());
 }

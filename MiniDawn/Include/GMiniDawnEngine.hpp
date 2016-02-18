@@ -24,12 +24,6 @@ public:
 private:
     bool isRunning;
     bool requestingEnd;
-
-    SharedPtr<GenericApplication> Application;
-    // Timer
-    // Input handler
-    // scenes
-    // renderer
 };
 
 extern MiniDawnEngine GMiniDawnEngine;

@@ -23,12 +23,19 @@ WindowsApplication* WindowsApplication::CreateApplication(const HINSTANCE Instan
 
 void WindowsApplication::PumpMessages(const float DeltaTime)
 {
-    MSG msg;
-
-    while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+    while (true)
     {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
+        MSG msg;
+
+        if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+        {
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        }
+        else
+        {
+            break;
+        }
     }
 }
 
@@ -39,13 +46,15 @@ void WindowsApplication::Tick(const float DeltaTime)
 
 SharedRef<GenericWindow> WindowsApplication::MakeWindow()
 {
-    return MakeShareable(new WindowsWindow);
+    return WindowsWindow::Make();
 }
 
 void WindowsApplication::InitialiseWindow(const SharedRef<GenericWindow>& Window, const SharedRef<GenericWindowDefinition>& InDefinition)
 {
     const SharedRef<WindowsWindow> windowRef = StaticCastSharedRef<WindowsWindow>(Window);
-    Windows.push_back(windowRef);
+
+    //Windows.push_back(windowRef);
+    window = windowRef;
     windowRef->Initialise(InDefinition, hInstance);
 }
 
@@ -61,7 +70,7 @@ LRESULT CALLBACK WindowsApplication::AppWndProc(HWND hwnd, UINT msg, WPARAM wPar
 
 int32_t WindowsApplication::ProcessMessage(HWND hwnd, uint32_t msg, WPARAM wParam, LPARAM lParam)
 {
-    SharedPtr<WindowsWindow> CurrentWindow = FindWindowByHWND(Windows, hwnd);
+    SharedPtr<WindowsWindow> CurrentWindow = window;//FindWindowByHWND(Windows, hwnd);
 
     // switch case to see if we need to handle the message
     // if so pass them onto ProcessDeferredMessage
@@ -107,7 +116,7 @@ int32_t WindowsApplication::ProcessMessage(HWND hwnd, uint32_t msg, WPARAM wPara
 
 int32_t WindowsApplication::ProcessDeferredMessage(const DeferredWindowsMessage & DeferredMessage)
 {
-    if (Windows.size() && DeferredMessage.NativeWindow.IsValid())
+    if (/*Windows.size() &&*/ DeferredMessage.NativeWindow.IsValid())
     {
         HWND hWnd = DeferredMessage.hWND;
         uint32_t msg = DeferredMessage.Message;
@@ -147,17 +156,18 @@ int32_t WindowsApplication::ProcessDeferredMessage(const DeferredWindowsMessage 
         case WM_DESTROY:
             {
                 // Hacky due to differences std::vector and UE's TArray
-                std::vector<SharedRef<WindowsWindow>>::const_iterator wnd;
-                for (std::vector<SharedRef<WindowsWindow>>::const_iterator wndIt = Windows.begin();
-                     wndIt != Windows.end(); wndIt++)
-                {
-                    if (DeferredMessage.NativeWindow.HasSameObject(&wndIt->Get()))
-                    {
-                        wnd = wndIt;
-                        break;
-                    }
-                }
-                Windows.erase(wnd);
+                //std::vector<SharedRef<WindowsWindow>>::const_iterator wnd;
+                //for (std::vector<SharedRef<WindowsWindow>>::const_iterator wndIt = Windows.begin();
+                //     wndIt != Windows.end(); wndIt++)
+                //{
+                //    if (DeferredMessage.NativeWindow.HasSameObject(&wndIt->Get()))
+                //    {
+                //        wnd = wndIt;
+                //        break;
+                //    }
+                //}
+                //Windows.erase(wnd);
+                window.Reset();
             }
         }
     }
@@ -167,6 +177,7 @@ int32_t WindowsApplication::ProcessDeferredMessage(const DeferredWindowsMessage 
 WindowsApplication::WindowsApplication(const HINSTANCE HInstance, const HICON IconHandle)
     : hInstance(HInstance)
 {
+    bool classRegistered = RegisterWindowsClass(hInstance, IconHandle);
 }
 
 bool WindowsApplication::RegisterWindowsClass(const HINSTANCE HInstance, const HICON HIcon)
@@ -174,16 +185,17 @@ bool WindowsApplication::RegisterWindowsClass(const HINSTANCE HInstance, const H
     WNDCLASSEX wcex;
 
     wcex.cbSize = sizeof(wcex);
-    wcex.style = CS_DBLCLKS; // Accept double clicks
+    wcex.style = CS_DBLCLKS | CS_HREDRAW | CS_VREDRAW; // Accept double clicks
     wcex.lpfnWndProc = AppWndProc;
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = 0;
     wcex.hInstance = static_cast<HINSTANCE>(HInstance);
     wcex.hIcon = static_cast<HICON>(HIcon);
     wcex.hCursor = LoadCursor(NULL, IDC_ARROW); // Ideally this should be modifiable
-    wcex.hbrBackground = NULL;
+    wcex.hbrBackground = CreateSolidBrush(RGB(255, 0, 255));
     wcex.lpszClassName = L"WindowClass";
+    wcex.lpszMenuName = NULL;
     wcex.hIconSm = NULL; // static_cast<HICON>(hIconSm);
 
-    return RegisterClassEx(&wcex);
+    return RegisterClassEx(&wcex); // Performance warning
 }
