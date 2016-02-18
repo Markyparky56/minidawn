@@ -22,6 +22,10 @@ void GenericWindow::Initialise(const SharedRef<GenericWindowDefinition> & InDefi
 {
 }
 
+void GenericWindow::FlipBuffers()
+{
+}
+
 //void GenericWindow::setStyle(unsigned int newStyle)
 //{
 //}

@@ -1,6 +1,7 @@
 #pragma once
 #include <Windows.h>
 #include "GenericWindow.hpp"
+#include "OpenGLWindows.hpp"
 
 class WindowsWindow : public GenericWindow
 {
@@ -12,7 +13,7 @@ public:
     // Register moved to WindowsApplication
 
     void Initialise(const SharedRef<GenericWindowDefinition> & InDefinition, void * HInstance) override;
-
+    void FlipBuffers() override;
     // Most of this is redundant now given that the class is defined in the application
     // and not by the window itself
     //void setStyle(unsigned int newStyle) override;
@@ -38,5 +39,5 @@ public:
     static SharedRef<WindowsWindow> Make();
 
 private:
-
+    SharedPtr<OpenGLContext> GLContext;
 };

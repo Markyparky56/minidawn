@@ -34,6 +34,12 @@
     <Filter Include="Source Files\Windows">
       <UniqueIdentifier>{5e0da27f-7100-4c67-b30e-dc44fd4d7a1f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Graphics">
+      <UniqueIdentifier>{a259f17b-5b55-40c3-be80-7a79d29ef96e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics">
+      <UniqueIdentifier>{f91d7415-9e45-400a-a343-72d7444577ba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\GErrorHandler.cpp">
@@ -62,6 +68,9 @@
     </ClCompile>
     <ClCompile Include="Source\GenericMemory.cpp">
       <Filter>Source Files\Generic</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\OpenGLWindows.cpp">
+      <Filter>Source Files\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -103,6 +112,9 @@
     </ClInclude>
     <ClInclude Include="Include\GenericWindow.hpp">
       <Filter>Header Files\Generic</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\OpenGLWindows.hpp">
+      <Filter>Header Files\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

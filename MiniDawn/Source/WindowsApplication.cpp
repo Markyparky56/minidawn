@@ -42,6 +42,9 @@ void WindowsApplication::PumpMessages(const float DeltaTime)
 void WindowsApplication::Tick(const float DeltaTime)
 {
     // UE4 uses this to check modifer keys (shift, ctrl, alt, caps)
+    // Instead we're going to use it to update the active scene and flip the window buffers
+    // activeScene->Update(DeltaTime);
+    window->FlipBuffers();
 }
 
 SharedRef<GenericWindow> WindowsApplication::MakeWindow()

@@ -13,6 +13,7 @@ public:
     virtual void Register();
     virtual void Register(void* hInstance);
     virtual void Initialise(const SharedRef<GenericWindowDefinition>& InDefinition, void* HInstance);
+    virtual void FlipBuffers();
 
     // TODO: Make generic... eventually, this'll do for windows for now
     //virtual void setStyle(unsigned int newStyle);

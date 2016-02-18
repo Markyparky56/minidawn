@@ -25,6 +25,7 @@
     <ClCompile Include="Source\DawnMain.cpp" />
     <ClCompile Include="Source\GMiniDawnEngine.cpp" />
     <ClCompile Include="Source\GMiniDawnEngineLoop.cpp" />
+    <ClCompile Include="Source\OpenGLWindows.cpp" />
     <ClCompile Include="Source\WindowsApplication.cpp" />
     <ClCompile Include="Source\WindowsWindow.cpp" />
     <ClCompile Include="Source\WinMain.cpp" />
@@ -39,6 +40,7 @@
     <ClInclude Include="Include\GMiniDawnEngineLoop.hpp" />
     <ClInclude Include="Include\MiniDawn.hpp" />
     <ClInclude Include="Include\GMiniDawnEngine.hpp" />
+    <ClInclude Include="Include\OpenGLWindows.hpp" />
     <ClInclude Include="Include\SharedRef.hpp" />
     <ClInclude Include="Include\SharedRefInternals.hpp" />
     <ClInclude Include="Include\WindowsApplication.hpp" />
