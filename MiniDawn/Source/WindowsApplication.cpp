@@ -42,14 +42,9 @@ void WindowsApplication::PumpMessages(const float DeltaTime)
 void WindowsApplication::Tick(const float DeltaTime)
 {
     // UE4 uses this to check modifer keys (shift, ctrl, alt, caps)
-<<<<<<< HEAD
     // Instead we'll use it to tick our Scene
     scene->Tick(DeltaTime);
-=======
-    // Instead we're going to use it to update the active scene and flip the window buffers
-    // activeScene->Update(DeltaTime);
     window->FlipBuffers();
->>>>>>> origin/Add_OpenGL
 }
 
 SharedRef<GenericWindow> WindowsApplication::MakeWindow()
@@ -66,7 +61,7 @@ void WindowsApplication::InitialiseWindow(const SharedRef<GenericWindow>& Window
     windowRef->Initialise(InDefinition, hInstance);
 }
 
-void WindowsApplication::InitialiseScene(const SharedRef<Scene>& InScene)
+void WindowsApplication::InitialiseScene(const SharedPtr<Scene>& InScene)
 {
     scene = InScene;
     scene->Init(input.Get(), renderer.Get());
@@ -195,7 +190,7 @@ WindowsApplication::WindowsApplication(const HINSTANCE HInstance, const HICON Ic
 
     // maybe this should be done by the engine itself?
     input = MakeShareable(new InputSystem);
-    renderer = MakeShareable(new Renderer);
+    renderer = MakeShareable(new LegacyOpenGLRenderer);
 }
 
 bool WindowsApplication::RegisterWindowsClass(const HINSTANCE HInstance, const HICON HIcon)

@@ -8,13 +8,15 @@
 
 #include "object.hpp"
 
-class TestScene : Scene
+class TestScene : public Scene
 {
 public:
     TestScene()
     {}
     ~TestScene()
     {}
+    //virtual void Init(InputSystem* InInputSystem, Renderer* InRenderer);
+    //void Tick(float InDeltaTime) override;
 
 private:
     void Update() override;

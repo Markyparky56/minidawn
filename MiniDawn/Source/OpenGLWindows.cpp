@@ -47,14 +47,16 @@ void ResizeGLWindow(int Width, int Height)
     glLoadIdentity();
 }
 
-void InitialiseOpenGL(OpenGLContext* Context, int Width, int Height)
+void InitialiseOpenGL(OpenGLContext* Context)
 {
     Context->deviceContext = GetDC(Context->windowHandle);
     if (!CreatePixelFormat(Context->deviceContext))
     {
         PostQuitMessage(0);
     }
+
     Context->openGLContext = wglCreateContext(Context->deviceContext);
     wglMakeCurrent(Context->deviceContext, Context->openGLContext);
-    ResizeGLWindow(Width, Height);
+
+    ResizeGLWindow(Context->screenRect.right, Context->screenRect.bottom);
 }

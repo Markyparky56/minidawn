@@ -26,7 +26,6 @@
     <ClCompile Include="Source\DawnMain.cpp" />
     <ClCompile Include="Source\GMiniDawnEngine.cpp" />
     <ClCompile Include="Source\GMiniDawnEngineLoop.cpp" />
-<<<<<<< HEAD
     <ClCompile Include="Source\InputSystem.cpp" />
     <ClCompile Include="Source\LegacyOpenGLRenderer.cpp" />
     <ClCompile Include="Source\Model.cpp" />
@@ -34,9 +33,7 @@
     <ClCompile Include="Source\TestScene.cpp" />
     <ClCompile Include="Source\timer.cpp" />
     <ClCompile Include="Source\TokenStream.cpp" />
-=======
     <ClCompile Include="Source\OpenGLWindows.cpp" />
->>>>>>> origin/Add_OpenGL
     <ClCompile Include="Source\WindowsApplication.cpp" />
     <ClCompile Include="Source\WindowsWindow.cpp" />
     <ClCompile Include="Source\WinMain.cpp" />
@@ -55,15 +52,12 @@
     <ClInclude Include="Include\maths.vector.hpp" />
     <ClInclude Include="Include\MiniDawn.hpp" />
     <ClInclude Include="Include\GMiniDawnEngine.hpp" />
-<<<<<<< HEAD
     <ClInclude Include="Include\Model.h" />
     <ClInclude Include="Include\object.hpp" />
     <ClInclude Include="Include\Renderer.hpp" />
     <ClInclude Include="Include\Rotation.hpp" />
     <ClInclude Include="Include\Scene.hpp" />
-=======
     <ClInclude Include="Include\OpenGLWindows.hpp" />
->>>>>>> origin/Add_OpenGL
     <ClInclude Include="Include\SharedRef.hpp" />
     <ClInclude Include="Include\SharedRefInternals.hpp" />
     <ClInclude Include="Include\SOIL.h" />

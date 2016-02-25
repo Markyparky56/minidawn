@@ -6,7 +6,27 @@ void TestScene::Setup()
     Object* cube = new Object;
     SetupCube36(cube);
     objects.push_back(pObject(cube));
+    camera = std::make_unique<Camera>();
+    camera->SetPosition(Vector3(0.0f, 0.0f, 5.0f));
+    camera->SetUp(Vector3(0.0f, 1.0f, 0.0f));
+    camera->Update();
+    renderer->SetCamera(camera.get());
 }
+
+//void TestScene::Init(InputSystem * InInputSystem, Renderer * InRenderer)
+//{
+//    inputSystem = InInputSystem;
+//    renderer = InRenderer;
+//    Setup();
+//}
+//
+//void TestScene::Tick(float InDeltaTime)
+//{
+//    deltaTime = InDeltaTime;
+//    gameTime += deltaTime;
+//    Update();
+//    Render();
+//}
 
 // Logic
 void TestScene::Update()
@@ -16,6 +36,8 @@ void TestScene::Update()
 // Render Objects
 void TestScene::Render()
 {
+    LegacyOpenGLRenderer* loglRenderer = static_cast<LegacyOpenGLRenderer*>(renderer);
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
 
@@ -24,13 +46,13 @@ void TestScene::Render()
     // Directional Light
     static GLfloat dirLight_Diffuse[] = { 0.75f, 0.75f, 0.75f, 1.0f };
     static GLfloat dirLight_Position[] = { 1.0f, 1.0f, 0.25f, 0.0f };
-    static_cast<LegacyOpenGLRenderer*>(renderer)->SetLightProperty(GL_LIGHT0, GL_DIFFUSE, dirLight_Diffuse);
-    static_cast<LegacyOpenGLRenderer*>(renderer)->SetLightProperty(GL_LIGHT0, GL_POSITION, dirLight_Position);
-    static_cast<LegacyOpenGLRenderer*>(renderer)->EnableLight(GL_LIGHT0);
+    loglRenderer->SetLightProperty(GL_LIGHT0, GL_DIFFUSE, dirLight_Diffuse);
+    loglRenderer->SetLightProperty(GL_LIGHT0, GL_POSITION, dirLight_Position);
+    loglRenderer->EnableLight(GL_LIGHT0);
 
     for (auto& obj : objects)
     {
-        renderer->DrawObject(*obj);
+        loglRenderer->DrawObject(*obj);
     }
 }
 
@@ -241,6 +263,7 @@ void TestScene::SetupCube36(Object* cube)
         Vector2(1.0f, 1.0f)
     }};
 
+    cube->setGLMode(GL_TRIANGLES);
     cube->setColours(cubeColours);
     cube->setNormals(cubeNormals);
     cube->setUVs(cubeUVs);
@@ -257,4 +280,5 @@ void TestScene::SetupCube36(Object* cube)
 
     cube->setPosition(Vector3(0.0f, 0.0f, 0.0f));
     cube->setScale(Vector3(1.0f, 1.0f, 1.0f));
-    cube->setRotation(Rotation(0.0f, Vector3(0.0f, 1.0f, 0.0f))); }
+    cube->setRotation(Rotation(0.0f, Vector3(0.0f, 1.0f, 0.0f))); 
+}

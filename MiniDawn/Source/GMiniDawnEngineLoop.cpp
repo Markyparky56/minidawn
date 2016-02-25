@@ -1,5 +1,7 @@
 #include "GMiniDawnEngineLoop.hpp"
 
+#include "TestScene.hpp"
+
 extern MiniDawnEngine GMiniDawnEngine;
 MiniDawnEngineLoop GEngineLoop;
 
@@ -52,7 +54,7 @@ bool MiniDawnEngineLoop::AppInit()
 #endif
 
     // Create Scene
-    SharedRef<Scene> scene = MakeShareable(new Scene);
+    SharedPtr<Scene> scene = MakeShareable(new TestScene);
     application->InitialiseScene(scene);
 
     return false;
@@ -66,6 +68,7 @@ int MiniDawnEngineLoop::Tick()
     float deltaTime = timer.GetTime();
 
     application->PumpMessages(deltaTime);
+    application->Tick(deltaTime);
     return 0;
 }
 

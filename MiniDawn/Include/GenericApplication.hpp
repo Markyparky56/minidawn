@@ -6,6 +6,7 @@
 
 class InputSystem;
 class Renderer;
+class Scene;
 
 class GenericApplication
 {
@@ -27,7 +28,7 @@ public:
     virtual void DestroyApplication() {}
     //const SharedPtr<Cursor> Cursor;
 
-    virtual void InitialiseScene(const SharedRef<Scene>& InScene) {}
+    virtual void InitialiseScene(const SharedPtr<Scene>& InScene) {}
 
 protected:
     // Message Handler    

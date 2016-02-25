@@ -14,8 +14,8 @@ public:
         : wireframeMode(false)
         , gameTime(0.0)
     {}
-    void Init(InputSystem* InInputSystem, Renderer* InRenderer);
-    void Tick(float InDeltaTime);
+    virtual void Init(InputSystem* InInputSystem, Renderer* InRenderer);
+    virtual void Tick(float InDeltaTime);
 
 protected:
     virtual void Update();

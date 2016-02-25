@@ -128,5 +128,7 @@ void LegacyOpenGLRenderer::SetMaterial(GLenum Face, GLenum Property, GLfloat Pro
 
 GLuint LegacyOpenGLRenderer::LoadTexture(char * Loc, int LoadType, int IdType, int Flags)
 {
-    return GLuint();
+    GLuint img;
+    img = SOIL_load_OGL_texture(Loc, LoadType, IdType, Flags);
+    return img;
 }

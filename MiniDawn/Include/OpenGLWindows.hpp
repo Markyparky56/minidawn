@@ -14,6 +14,7 @@ struct OpenGLContext
     HWND windowHandle;
     HDC deviceContext;
     HGLRC openGLContext;
+    RECT screenRect;
 };
 
 const int ColourDepth = 24;
@@ -21,4 +22,4 @@ const int DepthDepth = 16; // Maybe needs a new name?
 
 bool CreatePixelFormat(HDC InHDC);
 void ResizeGLWindow(int Width, int Height);
-void InitialiseOpenGL(OpenGLContext* Context, int Width, int Height);
+void InitialiseOpenGL(OpenGLContext* Context);

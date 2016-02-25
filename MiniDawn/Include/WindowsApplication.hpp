@@ -57,7 +57,7 @@ public:
     void DestroyApplication() override;
 
     // Workaround until we have a proper way of handling scenes
-    void InitialiseScene(const SharedRef<Scene>& InScene) override;
+    void InitialiseScene(const SharedPtr<Scene>& InScene) override;
 
 protected:
     static LRESULT CALLBACK AppWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
@@ -71,6 +71,7 @@ private:
     HINSTANCE hInstance;
 
     //std::vector<SharedRef<WindowsWindow>> Windows; // Hypothetically possible to have additional windows
+    //SharedPtr<OpenGLContext> GLContext;
     SharedPtr<WindowsWindow> window;
     // TODO: scene map? Some way of having multiple scenes
     SharedPtr<Scene> scene;
