@@ -1,24 +1,26 @@
 #pragma once
 #include "Camera.hpp"
+#include "InputSystem.hpp"
+#include "Renderer.hpp"
 
-class InputSystem;
-class Renderer;
-
-// Temporary STL unique_ptrs, replace with compatible UE4 UniquePtrs when able
+// Temporary STL unique_ptr, replace with compatible UE4 UniquePtrs when able
 #include <memory>
 using pCamera = std::unique_ptr<Camera>;
-
-//#include "object.hpp"
 
 class Scene
 {
 public:
+    Scene()
+        : wireframeMode(false)
+        , gameTime(0.0)
+    {}
     void Init(InputSystem* InInputSystem, Renderer* InRenderer);
     void Tick(float InDeltaTime);
 
 protected:
     virtual void Update();
     virtual void Render();
+    virtual void Setup();
 
     InputSystem* inputSystem;
     Renderer* renderer;
@@ -28,4 +30,5 @@ protected:
     double gameTime;
 
     CamRot camRot;
+    pCamera camera;
 };

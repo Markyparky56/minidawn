@@ -6,6 +6,10 @@
 #include "WindowsWindow.hpp"
 #include "GMiniDawnEngine.hpp"
 
+#include "InputSystem.hpp"
+#include "LegacyOpenGLRenderer.hpp"
+#include "Scene.hpp"
+
 // We likely won't actually defer messages, but it's a nice way to bundle all the data together instead of passing
 // it as separate paramters
 struct DeferredWindowsMessage
@@ -52,6 +56,9 @@ public:
     void InitialiseWindow(const SharedRef<GenericWindow>& Window, const SharedRef<GenericWindowDefinition>& InDefinition) override;
     void DestroyApplication() override;
 
+    // Workaround until we have a proper way of handling scenes
+    void InitialiseScene(const SharedRef<Scene>& InScene) override;
+
 protected:
     static LRESULT CALLBACK AppWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
     int32_t ProcessMessage(HWND hwnd, uint32_t msg, WPARAM wParam, LPARAM lParam);
@@ -65,4 +72,6 @@ private:
 
     //std::vector<SharedRef<WindowsWindow>> Windows; // Hypothetically possible to have additional windows
     SharedPtr<WindowsWindow> window;
+    // TODO: scene map? Some way of having multiple scenes
+    SharedPtr<Scene> scene;
 };

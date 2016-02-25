@@ -42,6 +42,8 @@ void WindowsApplication::PumpMessages(const float DeltaTime)
 void WindowsApplication::Tick(const float DeltaTime)
 {
     // UE4 uses this to check modifer keys (shift, ctrl, alt, caps)
+    // Instead we'll use it to tick our Scene
+    scene->Tick(DeltaTime);
 }
 
 SharedRef<GenericWindow> WindowsApplication::MakeWindow()
@@ -58,9 +60,15 @@ void WindowsApplication::InitialiseWindow(const SharedRef<GenericWindow>& Window
     windowRef->Initialise(InDefinition, hInstance);
 }
 
+void WindowsApplication::InitialiseScene(const SharedRef<Scene>& InScene)
+{
+    scene = InScene;
+    scene->Init(input.Get(), renderer.Get());
+}
+
 void WindowsApplication::DestroyApplication()
 {
-    // Don't actually have to destroy anything, shame
+    // Don't actually have to destroy anything manually, damn you smart pointers!
 }
 
 LRESULT CALLBACK WindowsApplication::AppWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -178,6 +186,10 @@ WindowsApplication::WindowsApplication(const HINSTANCE HInstance, const HICON Ic
     : hInstance(HInstance)
 {
     bool classRegistered = RegisterWindowsClass(hInstance, IconHandle);
+
+    // maybe this should be done by the engine itself?
+    input = MakeShareable(new InputSystem);
+    renderer = MakeShareable(new Renderer);
 }
 
 bool WindowsApplication::RegisterWindowsClass(const HINSTANCE HInstance, const HICON HIcon)

@@ -29,21 +29,6 @@ int MiniDawnEngineLoop::Init()
     return 0;
 }
 
-int MiniDawnEngineLoop::Tick()
-{
-    int error = 0;
-
-    timer.Frame();
-    float deltaTime = timer.GetTime();
-
-    application->PumpMessages(deltaTime);
-    return 0;
-}
-
-void MiniDawnEngineLoop::Exit()
-{
-}
-
 bool MiniDawnEngineLoop::AppInit()
 {
 #if defined(PLATFORM_WINDOWS)
@@ -65,7 +50,27 @@ bool MiniDawnEngineLoop::AppInit()
     ShowWindow(static_cast<HWND>(wnd->getHwnd()), SW_SHOW);
     UpdateWindow(static_cast<HWND>(wnd->getHwnd()));
 #endif
+
+    // Create Scene
+    SharedRef<Scene> scene = MakeShareable(new Scene);
+    application->InitialiseScene(scene);
+
     return false;
+}
+
+int MiniDawnEngineLoop::Tick()
+{
+    int error = 0;
+
+    timer.Frame();
+    float deltaTime = timer.GetTime();
+
+    application->PumpMessages(deltaTime);
+    return 0;
+}
+
+void MiniDawnEngineLoop::Exit()
+{
 }
 
 void MiniDawnEngineLoop::AppPreExit()

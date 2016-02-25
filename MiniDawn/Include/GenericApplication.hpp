@@ -4,6 +4,8 @@
 #include "GenericWindowDefinition.hpp"
 #include "GenericWindow.hpp"
 
+class InputSystem;
+class Renderer;
 
 class GenericApplication
 {
@@ -25,7 +27,11 @@ public:
     virtual void DestroyApplication() {}
     //const SharedPtr<Cursor> Cursor;
 
+    virtual void InitialiseScene(const SharedRef<Scene>& InScene) {}
+
 protected:
     // Message Handler    
     SharedRef<class GenericMessageHandler> MessageHandler;
+    SharedPtr<InputSystem> input;
+    SharedPtr<Renderer> renderer;
 };

@@ -2,6 +2,7 @@
 #include <vector>
 #include <memory>
 #include "maths.vector.hpp"
+#include <Windows.h> // EVIL
 #include <gl\GL.h>
 #include <gl\GLU.h>
 #include "texture.hpp"

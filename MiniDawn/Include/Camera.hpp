@@ -23,11 +23,11 @@ public:
     inline void SetPitch(const float NewPitch)      { pitch = NewPitch; }
     inline void SetRoll(const float NewRoll)        { roll = NewRoll; }
 
-    inline Vector3 GetPosition()    { return position; }
-    inline Vector3 GetLookAt()      { return lookat; }
-    inline Vector3 GetUp()          { return up; }
-    inline Vector3 GetForward()     { return forward; }
-    inline Vector3 GetRight()       { return right; }
+    inline Vector3& GetPosition()    { return position; }
+    inline Vector3& GetLookAt()      { return lookat; }
+    inline Vector3& GetUp()          { return up; }
+    inline Vector3& GetForward()     { return forward; }
+    inline Vector3& GetRight()       { return right; }
 
     void Update();
 

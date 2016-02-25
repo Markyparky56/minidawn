@@ -1,4 +1,6 @@
 #pragma once
+#include <cmath>
+using std::sqrtf;
 
 class Vector3 
 {

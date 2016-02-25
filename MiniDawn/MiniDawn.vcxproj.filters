@@ -52,6 +52,18 @@
     <Filter Include="Header Files\SOIL">
       <UniqueIdentifier>{a13d1dff-1bcb-4495-855e-641a7e3075ed}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Systems">
+      <UniqueIdentifier>{295e34ec-f2ec-4220-9285-a2560125ccf6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Systems">
+      <UniqueIdentifier>{11f6b9ef-4bd5-4b24-9d65-ecf3a554b965}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scenes">
+      <UniqueIdentifier>{1123ef72-5d81-4ffb-861a-8dfb86fe7c87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scenes">
+      <UniqueIdentifier>{61277f15-d94c-4df9-9254-6b22f2f60cb4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\GErrorHandler.cpp">
@@ -87,14 +99,23 @@
     <ClCompile Include="Source\Camera.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Model.cpp">
       <Filter>Source Files\ModelLoader</Filter>
     </ClCompile>
     <ClCompile Include="Source\TokenStream.cpp">
       <Filter>Source Files\ModelLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\InputSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LegacyOpenGLRenderer.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\TestScene.cpp">
+      <Filter>Source Files\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -143,9 +164,6 @@
     <ClInclude Include="Include\maths.vector.hpp">
       <Filter>Header Files\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Scene.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Include\Camera.hpp">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
@@ -160,6 +178,27 @@
     </ClInclude>
     <ClInclude Include="Include\SOIL.h">
       <Filter>Header Files\SOIL</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Scene.hpp">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\InputSystem.hpp">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Texture.hpp">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\LegacyOpenGLRenderer.hpp">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Renderer.hpp">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Rotation.hpp">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\TestScene.hpp">
+      <Filter>Header Files\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
