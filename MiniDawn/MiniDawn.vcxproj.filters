@@ -34,6 +34,7 @@
     <Filter Include="Source Files\Windows">
       <UniqueIdentifier>{5e0da27f-7100-4c67-b30e-dc44fd4d7a1f}</UniqueIdentifier>
     </Filter>
+<<<<<<< HEAD
     <Filter Include="Header Files\Maths">
       <UniqueIdentifier>{dea07efe-690b-45bc-b93c-bb84dfdcb9ff}</UniqueIdentifier>
     </Filter>
@@ -63,6 +64,13 @@
     </Filter>
     <Filter Include="Header Files\Scenes">
       <UniqueIdentifier>{61277f15-d94c-4df9-9254-6b22f2f60cb4}</UniqueIdentifier>
+=======
+    <Filter Include="Header Files\Graphics">
+      <UniqueIdentifier>{a259f17b-5b55-40c3-be80-7a79d29ef96e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics">
+      <UniqueIdentifier>{f91d7415-9e45-400a-a343-72d7444577ba}</UniqueIdentifier>
+>>>>>>> origin/Add_OpenGL
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -93,6 +101,7 @@
     <ClCompile Include="Source\GenericMemory.cpp">
       <Filter>Source Files\Generic</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="Source\timer.cpp">
       <Filter>Source Files\Windows</Filter>
     </ClCompile>
@@ -117,6 +126,11 @@
     <ClCompile Include="Source\TestScene.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
+=======
+    <ClCompile Include="Source\OpenGLWindows.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+>>>>>>> origin/Add_OpenGL
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\MiniDawn.hpp">
@@ -158,6 +172,7 @@
     <ClInclude Include="Include\GenericWindow.hpp">
       <Filter>Header Files\Generic</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="Include\timer.h">
       <Filter>Header Files\Windows</Filter>
     </ClInclude>
@@ -200,5 +215,10 @@
     <ClInclude Include="Include\TestScene.hpp">
       <Filter>Header Files\Scenes</Filter>
     </ClInclude>
+=======
+    <ClInclude Include="Include\OpenGLWindows.hpp">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+>>>>>>> origin/Add_OpenGL
   </ItemGroup>
 </Project>

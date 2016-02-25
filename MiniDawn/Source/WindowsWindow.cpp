@@ -79,6 +79,14 @@ void WindowsWindow::Initialise(const SharedRef<GenericWindowDefinition> & InDefi
     }
 }
 
+void WindowsWindow::FlipBuffers()
+{
+    if (GLContext.IsValid())
+    {
+        SwapBuffers(GLContext->deviceContext);
+    }
+}
+
 void WindowsWindow::updateTitle(wchar_t* newTitle)
 {
     SetWindowText(static_cast<HWND>(hWnd), newTitle);
