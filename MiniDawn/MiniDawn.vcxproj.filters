@@ -62,7 +62,7 @@
       <UniqueIdentifier>{1123ef72-5d81-4ffb-861a-8dfb86fe7c87}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Scenes">
-        <UniqueIdentifier>{61277f15-d94c-4df9-9254-6b22f2f60cb4}</UniqueIdentifier>
+      <UniqueIdentifier>{61277f15-d94c-4df9-9254-6b22f2f60cb4}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Graphics">
       <UniqueIdentifier>{a259f17b-5b55-40c3-be80-7a79d29ef96e}</UniqueIdentifier>
@@ -111,9 +111,6 @@
     <ClCompile Include="Source\TokenStream.cpp">
       <Filter>Source Files\ModelLoader</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scene.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
     <ClCompile Include="Source\InputSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
@@ -125,6 +122,9 @@
     </ClCompile>
     <ClCompile Include="Source\OpenGLWindows.cpp">
       <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene.cpp">
+      <Filter>Source Files\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -188,9 +188,6 @@
     <ClInclude Include="Include\SOIL.h">
       <Filter>Header Files\SOIL</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Scene.hpp">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
     <ClInclude Include="Include\InputSystem.hpp">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
@@ -211,6 +208,9 @@
     </ClInclude>
     <ClInclude Include="Include\OpenGLWindows.hpp">
       <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Scene.hpp">
+      <Filter>Header Files\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

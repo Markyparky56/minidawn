@@ -1,5 +1,6 @@
 #include "WindowsApplication.hpp"
 #include <algorithm>
+#include <string>
 
 WindowsApplication* windowsApplication = nullptr;
 
@@ -44,6 +45,7 @@ void WindowsApplication::Tick(const float DeltaTime)
     // UE4 uses this to check modifer keys (shift, ctrl, alt, caps)
     // Instead we'll use it to tick our Scene
     scene->Tick(DeltaTime);
+    window->updateTitle(std::to_wstring(1.0f / (DeltaTime/1000.0f)).c_str());
     window->FlipBuffers();
 }
 

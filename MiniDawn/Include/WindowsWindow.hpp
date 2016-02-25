@@ -12,7 +12,7 @@ public:
     void Initialise(const SharedRef<GenericWindowDefinition> & InDefinition, void * HInstance) override;
     void FlipBuffers() override;
 
-    void updateTitle(wchar_t* newTitle) override;
+    void updateTitle(const wchar_t* newTitle) override;
 
     static SharedRef<WindowsWindow> Make();
 

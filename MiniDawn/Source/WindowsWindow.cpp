@@ -103,7 +103,7 @@ void WindowsWindow::FlipBuffers()
     }
 }
 
-void WindowsWindow::updateTitle(wchar_t* newTitle)
+void WindowsWindow::updateTitle(const wchar_t* newTitle)
 {
     SetWindowText(static_cast<HWND>(hWnd), newTitle);
 }

@@ -9,7 +9,7 @@ void Scene::Init(InputSystem * InInputSystem, Renderer * InRenderer)
 
 void Scene::Tick(float InDeltaTime)
 {
-    deltaTime = InDeltaTime;
+    deltaTime = InDeltaTime / 1000.0f;
     gameTime += deltaTime;
     Update();
     Render();

@@ -23,7 +23,6 @@ void Timer::Frame()
 	INT64 currentTime;
 	float timeDifference;
 
-
 	// Query the current time.
 	QueryPerformanceCounter((LARGE_INTEGER*)&currentTime);
 

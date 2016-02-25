@@ -90,6 +90,6 @@ void GenericWindow::FlipBuffers()
 //{
 //}
 
-void GenericWindow::updateTitle(wchar_t* newTitle)
+void GenericWindow::updateTitle(const wchar_t* newTitle)
 {
 }

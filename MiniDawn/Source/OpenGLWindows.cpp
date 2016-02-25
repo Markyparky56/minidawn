@@ -38,6 +38,8 @@ void ResizeGLWindow(int Width, int Height)
     }
 
     glViewport(0, 0, Width, Height);
+    
+    glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
     // Calculate aspect ratio

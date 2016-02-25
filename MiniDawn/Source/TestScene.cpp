@@ -14,61 +14,40 @@ void TestScene::Setup()
     renderer->SetCamera(camera.get());
 }
 
-//void TestScene::Init(InputSystem * InInputSystem, Renderer * InRenderer)
-//{
-//    inputSystem = InInputSystem;
-//    renderer = InRenderer;
-//    Setup();
-//}
-//
-//void TestScene::Tick(float InDeltaTime)
-//{
-//    deltaTime = InDeltaTime;
-//    gameTime += deltaTime;
-//    Update();
-//    Render();
-//}
-
 // Logic
 void TestScene::Update()
 {
+    Rotation oldRot = objects[0]->getRotation();
+    oldRot.deg += 15 * deltaTime;
+    objects[0]->setRotation(oldRot);
 }
 
 // Render Objects
 void TestScene::Render()
 {
+    // For extended functionality
     LegacyOpenGLRenderer* loglRenderer = static_cast<LegacyOpenGLRenderer*>(renderer);
 
     //glClearColor(deltaTime, deltaTime, deltaTime, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
 
-    //renderer->Look();
-    gluLookAt(0, 0, 6, 0, 0, 0, 0, 1, 0); //Where we are, What we look at, and which way is up
+    renderer->Look();
 
-    //// Directional Light
-    //static GLfloat dirLight_Diffuse[] = { 0.75f, 0.75f, 0.75f, 1.0f };
-    //static GLfloat dirLight_Position[] = { 1.0f, 1.0f, 0.25f, 0.0f };
-    //loglRenderer->SetLightProperty(GL_LIGHT0, GL_DIFFUSE, dirLight_Diffuse);
-    //loglRenderer->SetLightProperty(GL_LIGHT0, GL_POSITION, dirLight_Position);
-    //loglRenderer->EnableLight(GL_LIGHT0);
+    // Directional Light
+    static GLfloat dirLight_Diffuse[] = { 0.75f, 0.75f, 0.75f, 1.0f };
+    static GLfloat dirLight_Position[] = { 1.0f, 1.0f, 0.25f, 0.0f };
+    loglRenderer->SetLightProperty(GL_LIGHT0, GL_DIFFUSE, dirLight_Diffuse);
+    loglRenderer->SetLightProperty(GL_LIGHT0, GL_POSITION, dirLight_Position);
+    loglRenderer->EnableLight(GL_LIGHT0);
     
-    glBegin(GL_TRIANGLES);
-
-    glVertex3f(0.0, 1.0, 0.0);
-
-    glVertex3f(-1.0, 0.0, 0.0);
-
-    glVertex3f(1.0, 0.0, 0.0);
-
-    glEnd();
-
-    //for (auto& obj : objects)
-    //{
-    //    loglRenderer->DrawObject(*obj);
-    //}
+    for (auto& obj : objects)
+    {
+        loglRenderer->DrawObject(*obj);
+    }
 }
 
+// UVs whacky
 void TestScene::SetupCube36(Object* cube)
 {
     auto loglRenderer = static_cast<LegacyOpenGLRenderer*>(renderer);
@@ -122,8 +101,8 @@ void TestScene::SetupCube36(Object* cube)
 
     std::vector<Vector3> cubeColours;
     cubeColours.reserve(36);
-    for (int i = 0; i < 36; i++) cubeColours.push_back(Vector3(1.0f, 1.0f, 1.0f));
-   /* cubeColours =
+    //for (int i = 0; i < 36; i++) cubeColours.push_back(Vector3(1.0f, 1.0f, 1.0f));
+    cubeColours =
     {{
         Vector3(1.0f, 0.0f, 0.0f),
         Vector3(1.0f, 0.0f, 0.0f),
@@ -172,7 +151,7 @@ void TestScene::SetupCube36(Object* cube)
         Vector3(1.0f, 1.0f, 0.0f),
         Vector3(1.0f, 1.0f, 0.0f),
         Vector3(1.0f, 1.0f, 0.0f)
-    }};*/
+    }};
 
     std::vector<Vector3> cubeNormals;
     cubeNormals.reserve(36);
@@ -248,11 +227,11 @@ void TestScene::SetupCube36(Object* cube)
         Vector2(0.0f, 1.0f),
 
         Vector2(1.0f, 0.0f),
-        Vector2(1.0f, 0.0f),
+        Vector2(1.0f, 1.0f),
         Vector2(0.0f, 1.0f),
             // Top
         Vector2(1.0f, 0.0f),
-        Vector2(1.0f, 1.0f),
+        Vector2(1.0f, 0.0f),
         Vector2(0.0f, 1.0f),
 
         Vector2(1.0f, 0.0f),
@@ -295,3 +274,5 @@ void TestScene::SetupCube36(Object* cube)
     cube->setScale(Vector3(1.0f, 1.0f, 1.0f));
     cube->setRotation(Rotation(0.0f, Vector3(0.0f, 1.0f, 0.0f))); 
 }
+
+

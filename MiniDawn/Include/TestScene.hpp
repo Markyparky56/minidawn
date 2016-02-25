@@ -15,8 +15,6 @@ public:
     {}
     ~TestScene()
     {}
-    //virtual void Init(InputSystem* InInputSystem, Renderer* InRenderer);
-    //void Tick(float InDeltaTime) override;
 
 private:
     void Update() override;
