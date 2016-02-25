@@ -53,13 +53,9 @@ int MiniDawnEngine::Tick()
 
 int MiniDawnEngine::Exit()
 {    
-    // Scene shutdown?
-    // Application shutdown?
-    // Loop cleanup?
     GEngineLoop.AppPreExit();
     GEngineLoop.AppExit();
     GEngineLoop.Exit();    
-
     return 0;
 }
 

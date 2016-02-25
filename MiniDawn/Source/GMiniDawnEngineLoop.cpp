@@ -20,6 +20,7 @@ int MiniDawnEngineLoop::PreInit()
 #if defined(PLATFORM_WINDOWS)
     application = MakeShareable(WindowsApplication::CreateApplication(GetModuleHandle(NULL), NULL));
 #endif
+    timer.Initialize();
     return 0;
 }
 
@@ -31,7 +32,11 @@ int MiniDawnEngineLoop::Init()
 int MiniDawnEngineLoop::Tick()
 {
     int error = 0;
-    application->PumpMessages(0.0f); // Replace with delta time
+
+    timer.Frame();
+    float deltaTime = timer.GetTime();
+
+    application->PumpMessages(deltaTime);
     return 0;
 }
 
@@ -41,7 +46,6 @@ void MiniDawnEngineLoop::Exit()
 
 bool MiniDawnEngineLoop::AppInit()
 {
-    // This should be moved to the application
 #if defined(PLATFORM_WINDOWS)
     SharedRef<GenericWindow> wnd = application->MakeWindow();
     windowDef = SharedPtr<GenericWindowDefinition>(new GenericWindowDefinition);

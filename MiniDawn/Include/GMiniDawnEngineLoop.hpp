@@ -4,6 +4,7 @@
 #endif
 #include <thread>
 #include "GMiniDawnEngine.hpp"
+#include "timer.h"
 
 class MiniDawnEngine;
 
@@ -26,6 +27,7 @@ private:
     static SharedPtr<GenericApplication> application;
     static SharedPtr<GenericWindowDefinition> windowDef;
     // Timer
+    Timer timer;
     // Input handler
     // scenes
     // renderer

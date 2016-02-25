@@ -34,6 +34,24 @@
     <Filter Include="Source Files\Windows">
       <UniqueIdentifier>{5e0da27f-7100-4c67-b30e-dc44fd4d7a1f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Maths">
+      <UniqueIdentifier>{dea07efe-690b-45bc-b93c-bb84dfdcb9ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics">
+      <UniqueIdentifier>{02be21d2-9aea-4bbc-9947-012f13c46870}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics">
+      <UniqueIdentifier>{a49e3942-9566-4b05-9167-7e2d8dec8351}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ModelLoader">
+      <UniqueIdentifier>{9a7abfa7-1fdb-4cc1-8fbd-6a5d77bb807c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ModelLoader">
+      <UniqueIdentifier>{4f0ec0b4-d925-4600-a61e-215a0defdab2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\SOIL">
+      <UniqueIdentifier>{a13d1dff-1bcb-4495-855e-641a7e3075ed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\GErrorHandler.cpp">
@@ -62,6 +80,21 @@
     </ClCompile>
     <ClCompile Include="Source\GenericMemory.cpp">
       <Filter>Source Files\Generic</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\timer.cpp">
+      <Filter>Source Files\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Camera.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Model.cpp">
+      <Filter>Source Files\ModelLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\TokenStream.cpp">
+      <Filter>Source Files\ModelLoader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -103,6 +136,30 @@
     </ClInclude>
     <ClInclude Include="Include\GenericWindow.hpp">
       <Filter>Header Files\Generic</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\timer.h">
+      <Filter>Header Files\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\maths.vector.hpp">
+      <Filter>Header Files\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Scene.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Camera.hpp">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\object.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\TokenStream.h">
+      <Filter>Header Files\ModelLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Model.h">
+      <Filter>Header Files\ModelLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\SOIL.h">
+      <Filter>Header Files\SOIL</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
