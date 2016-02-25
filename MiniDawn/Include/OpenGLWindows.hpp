@@ -17,7 +17,7 @@ struct OpenGLContext
     RECT screenRect;
 };
 
-const int ColourDepth = 24;
+const int ColourDepth = 16;
 const int DepthDepth = 16; // Maybe needs a new name?
 
 bool CreatePixelFormat(HDC InHDC);

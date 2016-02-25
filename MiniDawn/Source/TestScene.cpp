@@ -6,6 +6,7 @@ void TestScene::Setup()
     Object* cube = new Object;
     SetupCube36(cube);
     objects.push_back(pObject(cube));
+
     camera = std::make_unique<Camera>();
     camera->SetPosition(Vector3(0.0f, 0.0f, 5.0f));
     camera->SetUp(Vector3(0.0f, 1.0f, 0.0f));
@@ -38,22 +39,34 @@ void TestScene::Render()
 {
     LegacyOpenGLRenderer* loglRenderer = static_cast<LegacyOpenGLRenderer*>(renderer);
 
+    //glClearColor(deltaTime, deltaTime, deltaTime, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
 
-    renderer->Look();
+    //renderer->Look();
+    gluLookAt(0, 0, 6, 0, 0, 0, 0, 1, 0); //Where we are, What we look at, and which way is up
 
-    // Directional Light
-    static GLfloat dirLight_Diffuse[] = { 0.75f, 0.75f, 0.75f, 1.0f };
-    static GLfloat dirLight_Position[] = { 1.0f, 1.0f, 0.25f, 0.0f };
-    loglRenderer->SetLightProperty(GL_LIGHT0, GL_DIFFUSE, dirLight_Diffuse);
-    loglRenderer->SetLightProperty(GL_LIGHT0, GL_POSITION, dirLight_Position);
-    loglRenderer->EnableLight(GL_LIGHT0);
+    //// Directional Light
+    //static GLfloat dirLight_Diffuse[] = { 0.75f, 0.75f, 0.75f, 1.0f };
+    //static GLfloat dirLight_Position[] = { 1.0f, 1.0f, 0.25f, 0.0f };
+    //loglRenderer->SetLightProperty(GL_LIGHT0, GL_DIFFUSE, dirLight_Diffuse);
+    //loglRenderer->SetLightProperty(GL_LIGHT0, GL_POSITION, dirLight_Position);
+    //loglRenderer->EnableLight(GL_LIGHT0);
+    
+    glBegin(GL_TRIANGLES);
 
-    for (auto& obj : objects)
-    {
-        loglRenderer->DrawObject(*obj);
-    }
+    glVertex3f(0.0, 1.0, 0.0);
+
+    glVertex3f(-1.0, 0.0, 0.0);
+
+    glVertex3f(1.0, 0.0, 0.0);
+
+    glEnd();
+
+    //for (auto& obj : objects)
+    //{
+    //    loglRenderer->DrawObject(*obj);
+    //}
 }
 
 void TestScene::SetupCube36(Object* cube)
