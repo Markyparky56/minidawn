@@ -17,6 +17,7 @@ public:
 
     inline void* getHwnd() const { return hWnd; }
     virtual void updateTitle(const wchar_t* newTitle);
+    SharedPtr<GenericWindowDefinition> GetDef() { return definition; }
 
 protected:
     void* hWnd;

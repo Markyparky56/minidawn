@@ -34,6 +34,8 @@ public:
     bool const GetMouseRight() const;
     bool const GetMouseMiddle() const;
 
+    void HandleMouseClick(int msg);
+
 private:
     mutable std::array<bool, 256> keys;
     mutable uint32_t mouseX, mouseY;

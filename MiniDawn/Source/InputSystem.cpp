@@ -78,3 +78,33 @@ bool const InputSystem::GetMouseMiddle() const
 {
     return mouse.middle;
 }
+
+void InputSystem::HandleMouseClick(int msg)
+{
+    switch (msg)
+    {
+    case WM_LBUTTONDOWN:
+        SetMouseLeft(true);
+        break;
+
+    case WM_LBUTTONUP:
+        SetMouseLeft(false);
+        break;
+
+    case WM_RBUTTONDOWN:
+        SetMouseRight(true);
+        break;
+
+    case WM_RBUTTONUP:
+        SetMouseRight(false);
+        break;
+
+    case WM_MBUTTONDOWN:
+        SetMouseMiddle(true);
+        break;
+
+    case WM_MBUTTONUP:
+        SetMouseMiddle(false);
+        break;
+    }
+}

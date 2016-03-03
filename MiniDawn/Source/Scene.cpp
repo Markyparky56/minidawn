@@ -1,9 +1,10 @@
 #include "Scene.hpp"
 
-void Scene::Init(InputSystem * InInputSystem, Renderer * InRenderer)
+void Scene::Init(InputSystem * InInputSystem, Renderer * InRenderer, GenericApplication* InParentApp)
 {
     inputSystem = InInputSystem;
     renderer = InRenderer;
+    parentApp = InParentApp;
     Setup();
 }
 

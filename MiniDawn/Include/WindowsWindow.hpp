@@ -15,6 +15,7 @@ public:
     void updateTitle(const wchar_t* newTitle) override;
 
     static SharedRef<WindowsWindow> Make();
+    SharedPtr<OpenGLContext> GetGLContext() { return GLContext; }
 
 private:
     SharedPtr<OpenGLContext> GLContext;

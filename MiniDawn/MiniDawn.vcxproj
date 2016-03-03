@@ -47,6 +47,7 @@
     <ClInclude Include="Include\GenericWindowDefinition.hpp" />
     <ClInclude Include="Include\GErrorHandler.hpp" />
     <ClInclude Include="Include\GMiniDawnEngineLoop.hpp" />
+    <ClInclude Include="Include\dbout.hpp" />
     <ClInclude Include="Include\InputSystem.hpp" />
     <ClInclude Include="Include\LegacyOpenGLRenderer.hpp" />
     <ClInclude Include="Include\maths.vector.hpp" />
@@ -54,6 +55,7 @@
     <ClInclude Include="Include\GMiniDawnEngine.hpp" />
     <ClInclude Include="Include\Model.h" />
     <ClInclude Include="Include\object.hpp" />
+    <ClInclude Include="include\PrimitiveObjects.hpp" />
     <ClInclude Include="Include\Renderer.hpp" />
     <ClInclude Include="Include\Rotation.hpp" />
     <ClInclude Include="Include\Scene.hpp" />

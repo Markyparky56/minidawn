@@ -88,7 +88,7 @@ void WindowsWindow::Initialise(const SharedRef<GenericWindowDefinition> & InDefi
     glClearColor(0.39f, 0.58f, 93.0f, 1.0f);
     glClearDepth(1.0f);
     glEnable(GL_DEPTH_TEST);
-    //glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHTING);
     glEnable(GL_COLOR_MATERIAL);
     glEnable(GL_TEXTURE_2D);
     glDepthFunc(GL_LEQUAL);

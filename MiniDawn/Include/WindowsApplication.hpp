@@ -58,6 +58,7 @@ public:
 
     // Workaround until we have a proper way of handling scenes
     void InitialiseScene(const SharedPtr<Scene>& InScene) override;
+    GenericWindow* GetActiveWindow();
 
 protected:
     static LRESULT CALLBACK AppWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);

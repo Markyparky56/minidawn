@@ -1,6 +1,7 @@
 #include "WindowsApplication.hpp"
 #include <algorithm>
 #include <string>
+#include <iostream>
 
 WindowsApplication* windowsApplication = nullptr;
 
@@ -66,7 +67,12 @@ void WindowsApplication::InitialiseWindow(const SharedRef<GenericWindow>& Window
 void WindowsApplication::InitialiseScene(const SharedPtr<Scene>& InScene)
 {
     scene = InScene;
-    scene->Init(input.Get(), renderer.Get());
+    scene->Init(input.Get(), renderer.Get(), this);
+}
+
+GenericWindow * WindowsApplication::GetActiveWindow()
+{
+    return window.Get();
 }
 
 void WindowsApplication::DestroyApplication()
@@ -139,14 +145,21 @@ int32_t WindowsApplication::ProcessDeferredMessage(const DeferredWindowsMessage 
         switch (msg)
         {
         case WM_KEYDOWN:
+            {
+                input->SetKeyDown(wParam);
+                return 0;
+            }
         case WM_KEYUP:
             {
                 // Pass to the input manager
+                input->SetKeyUp(wParam);
                 return 0;
             }
         case WM_MOUSEMOVE:
             {
                 // Pass to the input manager
+                input->SetMouseX(DeferredMessage.X);
+                input->SetMouseY(DeferredMessage.Y);
                 return 0;
             }
         case WM_LBUTTONDOWN:
@@ -157,6 +170,7 @@ int32_t WindowsApplication::ProcessDeferredMessage(const DeferredWindowsMessage 
         case WM_MBUTTONUP:
             {
                 // Pass to the input manager
+                input->HandleMouseClick(DeferredMessage.Message);
                 return 0;
             }
         case WM_CLOSE:

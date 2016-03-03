@@ -70,6 +70,15 @@
     <Filter Include="Source Files\Graphics">
       <UniqueIdentifier>{f91d7415-9e45-400a-a343-72d7444577ba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Templates\PrimitiveObjects">
+      <UniqueIdentifier>{cd9ec6fd-3204-48fc-9b3d-3b58136d25a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ThirdParty">
+      <UniqueIdentifier>{de86d738-2dda-4cd9-bc76-a787d0c5a566}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ThirdParty">
+      <UniqueIdentifier>{2f3ab3ee-8d2e-480f-b2dd-18768c78d25c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\GErrorHandler.cpp">
@@ -211,6 +220,12 @@
     </ClInclude>
     <ClInclude Include="Include\Scene.hpp">
       <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="include\PrimitiveObjects.hpp">
+      <Filter>Header Files\Templates\PrimitiveObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dbout.hpp">
+      <Filter>Header Files\ThirdParty</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -2,10 +2,13 @@
 #include "Camera.hpp"
 #include "InputSystem.hpp"
 #include "Renderer.hpp"
+#include "SharedRef.hpp"
 
 // Temporary STL unique_ptr, replace with compatible UE4 UniquePtrs when able
 #include <memory>
 using pCamera = std::unique_ptr<Camera>;
+
+class GenericApplication;
 
 class Scene
 {
@@ -14,7 +17,7 @@ public:
         : wireframeMode(false)
         , gameTime(0.0)
     {}
-    virtual void Init(InputSystem* InInputSystem, Renderer* InRenderer);
+    virtual void Init(InputSystem* InInputSystem, Renderer* InRenderer, GenericApplication* InParentApp);
     virtual void Tick(float InDeltaTime);
 
 protected:
@@ -22,13 +25,12 @@ protected:
     virtual void Render();
     virtual void Setup();
 
+    GenericApplication* parentApp;
+
     InputSystem* inputSystem;
     Renderer* renderer;
 
     bool wireframeMode;
     float deltaTime;
     double gameTime;
-
-    CamRot camRot;
-    pCamera camera;
 };

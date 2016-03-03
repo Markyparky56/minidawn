@@ -39,8 +39,8 @@ bool MiniDawnEngineLoop::AppInit()
     windowDef->AppearsInTaskBar = true;
     windowDef->HasCloseButton = true;
     windowDef->HasOSWindowBorder = true;
-    windowDef->Height = 600;
-    windowDef->Width = 800;
+    windowDef->Width = 1280;
+    windowDef->Height = 720;    
     windowDef->IsResizable = false;
     windowDef->SupportsMaximise = false;
     windowDef->SupportsMinimise = true;

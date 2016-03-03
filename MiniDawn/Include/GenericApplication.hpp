@@ -29,7 +29,7 @@ public:
     //const SharedPtr<Cursor> Cursor;
 
     virtual void InitialiseScene(const SharedPtr<Scene>& InScene) {}
-
+    virtual GenericWindow* GetActiveWindow() { return nullptr; }
 protected:
     // Message Handler    
     SharedRef<class GenericMessageHandler> MessageHandler;
