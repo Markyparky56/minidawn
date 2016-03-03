@@ -10,14 +10,17 @@ void TestScene::Setup()
     windowDef = parentApp->GetActiveWindow()->GetDef();
     screenCentre = Vector2(windowDef->Width / 2, windowDef->Height / 2);
 
-    //Object* cube = new Object;
-    ////SetupCube36(cube);
-    //objects.push_back(pObject(cube));
-
+    buttonPressGracePeriod = 0.2f;
+    lockMouseLastChangeTime = gameTime;
+    wireframeModeLastChangeTime = gameTime;
+    lockMouse = true;
+    ShowCursor(!lockMouse);
+    
     newPos = Vector2(0.0f, 0.0f);
     camRot.pitch = 0.0f;
     camRot.yaw = 0.0f;
     camRot.roll = 0.0f;
+    cameraSpeed = 4.0f;
 
     camera = std::make_unique<Camera>();
     camera->SetPosition(Vector3(0.0f, 0.0f, 5.0f));
@@ -38,46 +41,81 @@ void TestScene::Update()
     // Handle input
     if (inputSystem->IsKeyDown('P'))
     {
-        wireframeMode = !wireframeMode;
+        if (gameTime >= (wireframeModeLastChangeTime + buttonPressGracePeriod))
+        {
+            wireframeMode = !wireframeMode;
+            wireframeModeLastChangeTime = gameTime;
+        }
     }
+    if (inputSystem->IsKeyDown(VK_F1))
+    {
+        if (gameTime >= (lockMouseLastChangeTime + buttonPressGracePeriod))
+        {
+            lockMouse = !lockMouse;
+            ShowCursor(!lockMouse);
+            lockMouseLastChangeTime = gameTime;
+        }
+    }
+
     // Move Camera
     Vector3 camPos = camera->GetPosition();
     if (inputSystem->IsKeyDown('D'))
     {
-        camPos += (camera->GetRight() * deltaTime);
+        camPos += (camera->GetRight() * deltaTime * cameraSpeed);
     }
     else if (inputSystem->IsKeyDown('A'))
     {
-        camPos -= (camera->GetRight() * deltaTime);
+        camPos -= (camera->GetRight() * deltaTime * cameraSpeed);
     }
     if (inputSystem->IsKeyDown('W'))
     {
-        camPos += (camera->GetForward() * deltaTime);
+        camPos += (camera->GetForward() * deltaTime * cameraSpeed);
     }
     else if (inputSystem->IsKeyDown('S'))
     {
-        camPos -= (camera->GetForward() * deltaTime);
+        camPos -= (camera->GetForward() * deltaTime * cameraSpeed);
+    }
+    if (inputSystem->IsKeyDown('E'))
+    {
+        camRot.roll -= 90.f*deltaTime;
+    }
+    else if (inputSystem->IsKeyDown('Q'))
+    {
+        camRot.roll += 90.f*deltaTime;
+    }
+    if (inputSystem->IsKeyDown(VK_SPACE))
+    {
+        camPos += (Vector3(0.0f, 1.0f, 0.0f) * deltaTime * cameraSpeed);
+    }
+    else if (inputSystem->IsKeyDown(VK_CONTROL))
+    {
+        camPos -= (Vector3(0.0f, 1.0f, 0.0f) * deltaTime * cameraSpeed);
     }
     
     if (inputSystem->IsKeyDown(VK_ESCAPE)) // Hit escape to exit, so if we decide to lock the mouse we can still quit
     {
         GMiniDawnEngine.RequestEnd();
     }
+
+    // Grab the mouse position
     newPos.x = inputSystem->GetMouseX();
     newPos.y = inputSystem->GetMouseY();
-
-    // Reset the mouse position
-    POINT pt;
-    pt.x = screenCentre.x;
-    pt.y = screenCentre.y;
-    ClientToScreen(static_cast<HWND>(parentApp->GetActiveWindow()->getHwnd()), &pt);
-    SetCursorPos(pt.x, pt.y);
 
     // Convert mouse movement to camera rotation
     Vector2 dir = screenCentre - newPos;
     dir.normalise();
     camRot.pitch += dir.y * (90.f*deltaTime);
     camRot.yaw += dir.x * (-90.f*deltaTime);
+
+    // Reset the mouse position
+    if (lockMouse)
+    {
+        POINT pt;
+        pt.x = screenCentre.x;
+        pt.y = screenCentre.y;
+        ClientToScreen(static_cast<HWND>(parentApp->GetActiveWindow()->getHwnd()), &pt);
+        SetCursorPos(pt.x, pt.y);
+    }
 
     //DebugOutput(L"oldPos(%f, %f)\n", oldPos.x, oldPos.y);
     //DebugOutput(L"newPos(%f, %f)\n", newPos.x, newPos.y);
@@ -88,10 +126,11 @@ void TestScene::Update()
     camera->SetPosition(camPos);
     camera->SetPitch(camRot.pitch);
     camera->SetYaw(camRot.yaw);
+    camera->SetRoll(camRot.roll);
     camera->Update();
 
-    Vector3 currOffset = model.getTexture().getOffset();
-    model.getTexture().setOffset(currOffset + Vector3(deltaTime, 0.0f, 0.0f));
+    Vector3 currOffset = model.GetTexture().GetOffset();
+    model.GetTexture().SetOffset(currOffset + Vector3(deltaTime, 0.0f, 0.0f));
 }
 
 // Render Objects
@@ -122,15 +161,6 @@ void TestScene::Render()
     loglRenderer->SetLightProperty(GL_LIGHT0, GL_POSITION, dirLight_Position);
     loglRenderer->EnableLight(GL_LIGHT0);
     
-    for (auto& obj : objects)
-    {
-        //loglRenderer->DrawObject(*obj);
-    }    
-
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_NORMAL_ARRAY);
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
     glColor3f(1.0f, 1.0f, 1.0f);
     //glPushMatrix();
     //    glScalef(0.25f, 0.25f, 0.25f);
@@ -140,268 +170,5 @@ void TestScene::Render()
     //    glDrawArrays(GL_TRIANGLES, 0, model.getVerts().size()/3);
     //glPopMatrix();
 
-    if (model.getTexture().getTexture())
-    {
-        Texture& tex = model.getTexture();
-        glEnable(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D, model.getTexture().getTexture());
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glMatrixMode(GL_TEXTURE);
-        glPushMatrix();
-        Vector3 &offset = tex.getOffset(), &scale = tex.getScale();
-        Rotation &rot = tex.getRotation();
-        glTranslatef(offset.x, offset.y, offset.z);
-        glRotatef(rot.deg, rot.axis.x, rot.axis.y, rot.axis.z);
-        glScalef(scale.x, scale.y, scale.z);
-    }
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-        glVertexPointer(3, GL_FLOAT, 0, &(cube.GetVertices()[0]));
-        glNormalPointer(GL_FLOAT, 0, &(cube.GetNormals()[0]));
-        glTexCoordPointer(2, GL_FLOAT, 0, &(cube.GetTexCoords()[0]));
-        glDrawElements(GL_TRIANGLES, cube.GetIndicies().size(), GL_UNSIGNED_INT, &(cube.GetIndicies()[0]));
-    glPopMatrix();
-
-    glDisableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_NORMAL_ARRAY);
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    if (model.getTexture().getTexture())
-    {
-        glBindTexture(GL_TEXTURE_2D, NULL);
-        glDisable(GL_TEXTURE_2D);
-        glMatrixMode(GL_TEXTURE);
-        glPopMatrix();
-        glMatrixMode(GL_MODELVIEW);
-    }
-}
-
-// UVs whacky
-void TestScene::SetupCube36(Object* cube)
-{
-    auto loglRenderer = static_cast<LegacyOpenGLRenderer*>(renderer);
-    std::vector<Vector3> cubeVerts;
-    cubeVerts.reserve(36);
-    cubeVerts =
-    {{
-        // Front
-        Vector3(-0.5f, 0.5f, -0.5f),    // 1
-        Vector3(0.5f, -0.5f, -0.5f),    // 2
-        Vector3(-0.5f, -0.5f, -0.5f),   // 3
-        Vector3(-0.5f, 0.5f, -0.5f),    // 4
-        Vector3(0.5f, 0.5f, -0.5f),     // 5
-        Vector3(0.5f, -0.5f, -0.5f),    // 6
-                                        // Bottom
-        Vector3(-0.5f, -0.5f, -0.5f),   // 7
-        Vector3(0.5f, -0.5f, 0.5f),     // 8
-        Vector3(-0.5f, -0.5f, 0.5f),    // 9
-        Vector3(0.5f, -0.5f, -0.5f),    // 10
-        Vector3(0.5f, -0.5f, 0.5f),     // 11
-        Vector3(-0.5f, -0.5f, -0.5f),   // 12
-                                        // Back
-        Vector3(-0.5f, -0.5f, 0.5f),    // 13
-        Vector3(0.5f, 0.5f, 0.5f),      // 14
-        Vector3(-0.5f, 0.5f, 0.5f),     // 15
-        Vector3(-0.5f, -0.5f, 0.5f),    // 16
-        Vector3(0.5f, -0.5f, 0.5f),     // 17
-        Vector3(0.5f, 0.5f, 0.5f),      // 18
-                                        // Top
-        Vector3(-0.5f, 0.5f, 0.5f),     // 19
-        Vector3(0.5f, 0.5f, 0.5f),      // 20
-        Vector3(-0.5f, 0.5f, -0.5f),    // 21
-        Vector3(0.5f, 0.5f, 0.5f),      // 22
-        Vector3(0.5f, 0.5f, -0.5f),     // 23
-        Vector3(-0.5f, 0.5f, -0.5f),    // 24
-                                        // Left
-        Vector3(-0.5f, 0.5f, -0.5f),    // 25
-        Vector3(-0.5f, -0.5f, -0.5f),   // 26
-        Vector3(-0.5f, 0.5f, 0.5f),     // 27
-        Vector3(-0.5f, -0.5f, 0.5f),    // 28
-        Vector3(-0.5f, 0.5f, 0.5f),     // 29
-        Vector3(-0.5f, -0.5f, -0.5f),   // 30
-                                        // Right
-        Vector3(0.5f, -0.5f, -0.5f),    // 31
-        Vector3(0.5f, 0.5f, -0.5f),     // 32
-        Vector3(0.5f, -0.5f, 0.5f),     // 33
-        Vector3(0.5f, 0.5f, -0.5f),     // 34
-        Vector3(0.5f, 0.5f, 0.5f),      // 35
-        Vector3(0.5f, -0.5f, 0.5f)      // 36
-    }};
-
-    std::vector<Vector3> cubeColours;
-    cubeColours.reserve(36);
-    for (int i = 0; i < 36; i++) cubeColours.push_back(Vector3(1.0f, 1.0f, 1.0f));
-    /*cubeColours =
-    {{
-        Vector3(1.0f, 0.0f, 0.0f),
-        Vector3(1.0f, 0.0f, 0.0f),
-        Vector3(1.0f, 0.0f, 0.0f),
-
-        Vector3(1.0f, 0.0f, 0.0f),
-        Vector3(1.0f, 0.0f, 0.0f),
-        Vector3(1.0f, 0.0f, 0.0f),
-
-        Vector3(0.0f, 1.0f, 0.0f),
-        Vector3(0.0f, 1.0f, 0.0f),
-        Vector3(0.0f, 1.0f, 0.0f),
-
-        Vector3(0.0f, 1.0f, 0.0f),
-        Vector3(0.0f, 1.0f, 0.0f),
-        Vector3(0.0f, 1.0f, 0.0f),
-
-        Vector3(0.0f, 0.0f, 1.0f),
-        Vector3(0.0f, 0.0f, 1.0f),
-        Vector3(0.0f, 0.0f, 1.0f),
-
-        Vector3(0.0f, 0.0f, 1.0f),
-        Vector3(0.0f, 0.0f, 1.0f),
-        Vector3(0.0f, 0.0f, 1.0f),
-
-        Vector3(1.0f, 0.0f, 1.0f),
-        Vector3(1.0f, 0.0f, 1.0f),
-        Vector3(1.0f, 0.0f, 1.0f),
-
-        Vector3(1.0f, 0.0f, 1.0f),
-        Vector3(1.0f, 0.0f, 1.0f),
-        Vector3(1.0f, 0.0f, 1.0f),
-
-        Vector3(0.0f, 1.0f, 1.0f),
-        Vector3(0.0f, 1.0f, 1.0f),
-        Vector3(0.0f, 1.0f, 1.0f),
-
-        Vector3(0.0f, 1.0f, 1.0f),
-        Vector3(0.0f, 1.0f, 1.0f),
-        Vector3(0.0f, 1.0f, 1.0f),
-
-        Vector3(1.0f, 1.0f, 0.0f),
-        Vector3(1.0f, 1.0f, 0.0f),
-        Vector3(1.0f, 1.0f, 0.0f),
-
-        Vector3(1.0f, 1.0f, 0.0f),
-        Vector3(1.0f, 1.0f, 0.0f),
-        Vector3(1.0f, 1.0f, 0.0f)
-    }};*/
-
-    std::vector<Vector3> cubeNormals;
-    cubeNormals.reserve(36);
-    cubeNormals = 
-    {{
-            // Front
-        Vector3(0.0f, 0.0f, -1.0f),
-        Vector3(0.0f, 0.0f, -1.0f),
-        Vector3(0.0f, 0.0f, -1.0f),
-        Vector3(0.0f, 0.0f, -1.0f),
-        Vector3(0.0f, 0.0f, -1.0f),
-        Vector3(0.0f, 0.0f, -1.0f),
-            // Bottom
-        Vector3(0.0f, -1.0f, 0.0f),
-        Vector3(0.0f, -1.0f, 0.0f),
-        Vector3(0.0f, -1.0f, 0.0f),
-        Vector3(0.0f, -1.0f, 0.0f),
-        Vector3(0.0f, -1.0f, 0.0f),
-        Vector3(0.0f, -1.0f, 0.0f),
-            // Back
-        Vector3(0.0f, 0.0f, 1.0f),
-        Vector3(0.0f, 0.0f, 1.0f),
-        Vector3(0.0f, 0.0f, 1.0f),
-        Vector3(0.0f, 0.0f, 1.0f),
-        Vector3(0.0f, 0.0f, 1.0f),
-        Vector3(0.0f, 0.0f, 1.0f),
-            // Top
-        Vector3(0.0f, 1.0f, 0.0f),
-        Vector3(0.0f, 1.0f, 0.0f),
-        Vector3(0.0f, 1.0f, 0.0f),
-        Vector3(0.0f, 1.0f, 0.0f),
-        Vector3(0.0f, 1.0f, 0.0f),
-        Vector3(0.0f, 1.0f, 0.0f),
-            // Left
-        Vector3(-1.0f, 0.0f, 0.0f),
-        Vector3(-1.0f, 0.0f, 0.0f),
-        Vector3(-1.0f, 0.0f, 0.0f),
-        Vector3(-1.0f, 0.0f, 0.0f),
-        Vector3(-1.0f, 0.0f, 0.0f),
-        Vector3(-1.0f, 0.0f, 0.0f),
-            // Right
-        Vector3(1.0f, 0.0f, 0.0),
-        Vector3(1.0f, 0.0f, 0.0),
-        Vector3(1.0f, 0.0f, 0.0),
-        Vector3(1.0f, 0.0f, 0.0),
-        Vector3(1.0f, 0.0f, 0.0),
-        Vector3(1.0f, 0.0f, 0.0)
-    }};
-
-    std::vector<Vector2> cubeUVs;
-    cubeUVs.reserve(36);
-    cubeUVs =
-    {{
-            // Front
-        Vector2(1.0f, 1.0f),
-        Vector2(0.0f, 1.0f),
-        Vector2(1.0f, 0.0f),
-
-        Vector2(0.0f, 1.0f),
-        Vector2(0.0f, 0.0f),
-        Vector2(1.0f, 0.0f),
-        // Bottom
-        Vector2(0.0f, 1.0f),
-        Vector2(1.0f, 0.0f),
-        Vector2(0.0f, 0.0f),
-
-        Vector2(1.0f, 1.0f),
-        Vector2(1.0f, 0.0f),
-        Vector2(0.0f, 1.0f),
-            // Back
-        Vector2(0.0f, 0.0f),
-        Vector2(1.0f, 0.0f),
-        Vector2(0.0f, 1.0f),
-
-        Vector2(1.0f, 0.0f),
-        Vector2(1.0f, 1.0f),
-        Vector2(0.0f, 1.0f),
-            // Top
-        Vector2(1.0f, 0.0f),
-        Vector2(1.0f, 0.0f),
-        Vector2(0.0f, 1.0f),
-
-        Vector2(1.0f, 0.0f),
-        Vector2(1.0f, 1.0f),
-        Vector2(0.0f, 1.0f),
-            // Left
-        Vector2(1.0f, 0.0f),
-        Vector2(1.0f, 1.0f),
-        Vector2(0.0f, 0.0f),
-
-        Vector2(0.0f, 1.0f),
-        Vector2(0.0f, 0.0f),
-        Vector2(1.0f, 1.0f),
-            // Right
-        Vector2(0.0f, 1.0f),
-        Vector2(0.0f, 0.0f),
-        Vector2(1.0f, 1.0f),
-
-        Vector2(0.0f, 0.0f),
-        Vector2(1.0f, 0.0f),
-        Vector2(1.0f, 1.0f)
-    }};
-
-    cube->setGLMode(GL_TRIANGLES);
-    cube->setColours(cubeColours);
-    cube->setNormals(cubeNormals);
-    cube->setUVs(cubeUVs);
-    cube->setVerts(cubeVerts);
-
-    GLuint tex = loglRenderer->LoadTexture("crate.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
-
-    Texture texture(tex);
-    texture.setUProperty(GL_REPEAT);
-    texture.setVProperty(GL_REPEAT);
-
-    cube->setTexture(texture);
-    cube->enableTexture();
-
-    cube->setPosition(Vector3(0.0f, 0.0f, 0.0f));
-    cube->setScale(Vector3(1.0f, 1.0f, 1.0f));
-    cube->setRotation(Rotation(0.0f, Vector3(0.0f, 1.0f, 0.0f))); 
+    renderer->DrawModel(model);
 }

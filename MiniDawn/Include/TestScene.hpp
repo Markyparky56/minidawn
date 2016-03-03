@@ -26,14 +26,19 @@ private:
     void Render() override;
     void Setup() override;
 
-    void SetupCube36(Object* cube);
+    float buttonPressGracePeriod;
+    bool lockMouse;
+    float lockMouseLastChangeTime;
+    float wireframeModeLastChangeTime;
 
     Vector2 screenCentre, newPos;
 
     CamRot camRot;
     pCamera camera;
+    float cameraSpeed;
 
-    std::vector<pObject> objects;
+    //std::vector<pObject> objects;
+    // TODO: Rewrite Object class to use Model
     Model model;
     PrimitiveCube cube;
 

@@ -28,19 +28,19 @@ public:
     {}
     ~Texture() {}
 
-    inline void setTexture(GLuint tex)      { texture = tex; }
-    inline void setRotation(Rotation& rot)  { rotation = rot; }
-    inline void setUProperty(GLuint prop)   { uProp = prop; }
-    inline void setOffset(Vector3& off)     { offset = off; }
-    inline void setVProperty(GLuint prop)   { vProp = prop; }
-    inline void setScale(Vector3& scal)     { scale = scal; }
+    inline void SetTexture(GLuint tex)      { texture = tex; }
+    inline void SetRotation(Rotation& rot)  { rotation = rot; }
+    inline void SetUProperty(GLuint prop)   { uProp = prop; }
+    inline void SetOffset(Vector3& off)     { offset = off; }
+    inline void SetVProperty(GLuint prop)   { vProp = prop; }
+    inline void SetScale(Vector3& scal)     { scale = scal; }
 
-    inline Vector3 getOffset()              { return offset; }
-    inline GLuint getTexture()              { return texture; }
-    inline GLuint getVProperty()            { return vProp; }
-    inline GLuint getUProperty()            { return uProp; }
-    inline Rotation getRotation()           { return rotation; }
-    inline Vector3 getScale()               { return scale; }
+    inline Vector3 GetOffset()              { return offset; }
+    inline GLuint GetTexture()              { return texture; }
+    inline GLuint GetVProperty()            { return vProp; }
+    inline GLuint GetUProperty()            { return uProp; }
+    inline Rotation GetRotation()           { return rotation; }
+    inline Vector3 GetScale()               { return scale; }
 
 };
 using pTexture = std::unique_ptr<Texture>;

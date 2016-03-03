@@ -34,10 +34,10 @@ public:
 	bool Load(char* modelFilename, char* textureFilename);
 	void Render();
 
-    inline vector<float>& getVerts()        { return vertices; }
-    inline vector<float>& getNorms()        { return normals; }
-    inline vector<float>& getTexCoords()    { return texCoords; }
-    inline Texture& getTexture()            { return texture; }
+    inline vector<float>& GetVertices()        { return vertices; }
+    inline vector<float>& GetNormals()        { return normals; }
+    inline vector<float>& GetTexCoords()    { return texCoords; }
+    inline Texture& GetTexture()            { return texture; }
 
 private:	
 	void LoadTexture(char* filename);

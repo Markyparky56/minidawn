@@ -184,7 +184,7 @@ bool Model::LoadModel(char* filename)
 
 void Model::LoadTexture(char* filename)
 {	
-	texture.setTexture(SOIL_load_OGL_texture
+	texture.SetTexture(SOIL_load_OGL_texture
 	(
 		filename,
 		SOIL_LOAD_AUTO,
@@ -193,7 +193,7 @@ void Model::LoadTexture(char* filename)
 	));
 
 	//check for an error during the load process
-	if( texture.getTexture() == 0 )
+	if( texture.GetTexture() == 0 )
 	{
 		printf( "SOIL loading error: '%s'\n", SOIL_last_result() );
 	}

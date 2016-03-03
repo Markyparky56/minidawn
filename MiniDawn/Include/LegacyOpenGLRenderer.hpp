@@ -18,7 +18,7 @@ public:
     void StartDrawing(GLenum GLType);
     void EndDrawing() override;
 
-    void DrawObject(Object& Obj) override;
+    //void DrawObject(Object& Obj) override;
     void DrawModel(Model& Model) override;
 
     void Translate(Vector3& Trans) override;

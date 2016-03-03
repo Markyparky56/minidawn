@@ -5,6 +5,7 @@ void Scene::Init(InputSystem * InInputSystem, Renderer * InRenderer, GenericAppl
     inputSystem = InInputSystem;
     renderer = InRenderer;
     parentApp = InParentApp;
+    gameTime = 0.0;
     Setup();
 }
 
