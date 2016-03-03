@@ -227,5 +227,11 @@
     <ClInclude Include="Include\dbout.hpp">
       <Filter>Header Files\ThirdParty</Filter>
     </ClInclude>
+    <ClInclude Include="Include\PrimitiveCube.hpp">
+      <Filter>Header Files\Templates\PrimitiveObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\PrimitiveBase.hpp">
+      <Filter>Header Files\Templates\PrimitiveObjects</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

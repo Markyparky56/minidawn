@@ -8,7 +8,7 @@
 #include <unordered_map>
 
 // Additional includes
-#include "object.hpp"
+#include "PrimitiveObjects.hpp"
 #include "Model.h"
 
 struct GenericWindowDefinition;
@@ -35,6 +35,7 @@ private:
 
     std::vector<pObject> objects;
     Model model;
+    PrimitiveCube cube;
 
     SharedPtr<GenericWindowDefinition> windowDef;
 };

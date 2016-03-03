@@ -183,22 +183,20 @@ bool Model::LoadModel(char* filename)
 }
 
 void Model::LoadTexture(char* filename)
-{
-	
-	texture = SOIL_load_OGL_texture
+{	
+	texture.setTexture(SOIL_load_OGL_texture
 	(
 		filename,
 		SOIL_LOAD_AUTO,
 		SOIL_CREATE_NEW_ID,
 		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT | SOIL_FLAG_INVERT_Y
-	);
+	));
 
 	//check for an error during the load process
-	if(texture==0 )
+	if( texture.getTexture() == 0 )
 	{
 		printf( "SOIL loading error: '%s'\n", SOIL_last_result() );
 	}
-
 }
 
 // I followed the tutorial here: http://www.opengl-tutorial.org/beginners-tutorials/tutorial-7-model-loading/

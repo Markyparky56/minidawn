@@ -10,13 +10,12 @@
 #include <gl/glu.h>
 using namespace std; // This is bad
 
-
 // MY CLASS INCLUDES //
 #include "TokenStream.h" // We don't use this in the working loader
 #include <vector>
 #include "maths.vector.hpp"
 #include "SOIL.h"
-//#include "Texture.hpp"
+#include "Texture.hpp"
 
 template<class T>
 struct SortArgs
@@ -38,15 +37,15 @@ public:
     inline vector<float>& getVerts()        { return vertices; }
     inline vector<float>& getNorms()        { return normals; }
     inline vector<float>& getTexCoords()    { return texCoords; }
-    inline GLuint getTextureID()            { return texture; }
-	
+    inline Texture& getTexture()            { return texture; }
+
 private:	
 	void LoadTexture(char* filename);
 	bool LoadModel(char* filename);
     bool LoadObj(const char* Filename);
 	
 	int m_vertexCount;
-	GLuint texture;
+	Texture texture;
 
 	vector<float> vertices, normals, texCoords;
 };
