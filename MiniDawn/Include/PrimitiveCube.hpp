@@ -1,11 +1,12 @@
 #pragma once
-#include "PrimitiveBase.hpp"
+#include "VertexObject.hpp"
 
 // Define a Primitive Cube Object
-class PrimitiveCube : public PrimitiveBase
+class PrimitiveCube : public VertexObject
 {
 public:
     PrimitiveCube()
+        : VertexObject(ObjectType::Primitive)
     {
         vertices = { {
                 // Front Face

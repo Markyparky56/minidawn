@@ -9,7 +9,7 @@
 
 // Additional includes
 #include "PrimitiveObjects.hpp"
-#include "Model.h"
+#include "Object.hpp"
 
 struct GenericWindowDefinition;
 
@@ -37,10 +37,10 @@ private:
     pCamera camera;
     float cameraSpeed;
 
-    //std::vector<pObject> objects;
+    std::vector<spObject> objects;
     // TODO: Rewrite Object class to use Model
-    Model model;
-    PrimitiveCube cube;
+    /*Model model;
+    PrimitiveCube cube;*/
 
     SharedPtr<GenericWindowDefinition> windowDef;
 };

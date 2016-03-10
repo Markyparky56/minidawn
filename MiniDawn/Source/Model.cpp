@@ -23,12 +23,6 @@ bool Model::Load(char* modelFilename, char* textureFilename)
 	return true;
 }
 
-void Model::Render()
-{
-	// You must insert code here to render your model
-	// This function will be called from Scene3D.render()
-}
-
 bool Model::LoadModel(char* filename)
 {
 	std::ifstream fileStream;

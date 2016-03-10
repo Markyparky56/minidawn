@@ -35,12 +35,12 @@ public:
     inline void SetVProperty(GLuint prop)   { vProp = prop; }
     inline void SetScale(Vector3& scal)     { scale = scal; }
 
-    inline Vector3 GetOffset()              { return offset; }
-    inline GLuint GetTexture()              { return texture; }
-    inline GLuint GetVProperty()            { return vProp; }
-    inline GLuint GetUProperty()            { return uProp; }
-    inline Rotation GetRotation()           { return rotation; }
-    inline Vector3 GetScale()               { return scale; }
+    inline const Vector3 GetOffset() const      { return offset; }
+    inline const GLuint GetTexture() const      { return texture; }
+    inline const GLuint GetVProperty() const    { return vProp; }
+    inline const GLuint GetUProperty() const    { return uProp; }
+    inline const Rotation GetRotation() const   { return rotation; }
+    inline const Vector3 GetScale() const       { return scale; }
 
 };
 using pTexture = std::unique_ptr<Texture>;

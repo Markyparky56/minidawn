@@ -28,15 +28,19 @@ void TestScene::Setup()
     camera->Update();
     renderer->SetCamera(camera.get());
     
-    model.Load("models/teapot.obj", "crate.png");
+    spObject obj(new Object);
+    objects.push_back(obj);
+    obj->SetVO(new Model);
+    bool loadResult = static_cast<Model*>(obj->GetVO())->Load("models/teapot.obj", "crate.png");
+    obj->EnableTexture();
 }
 
 // Logic
 void TestScene::Update()
 {
-    /*Rotation oldRot = objects[0]->getRotation();
-    oldRot.deg += 15 * deltaTime;
-    objects[0]->setRotation(oldRot);*/
+    Rotation oldRot = objects[0]->GetRotation();
+    oldRot.deg += 15.0f * deltaTime;
+    objects[0]->SetRotation(oldRot);
 
     // Handle input
     if (inputSystem->IsKeyDown('P'))
@@ -129,8 +133,8 @@ void TestScene::Update()
     camera->SetRoll(camRot.roll);
     camera->Update();
 
-    Vector3 currOffset = model.GetTexture().GetOffset();
-    model.GetTexture().SetOffset(currOffset + Vector3(deltaTime, 0.0f, 0.0f));
+    Vector3 currOffset = objects[0]->GetVO()->GetTexture().GetOffset();
+    objects[0]->GetVO()->GetTexture().SetOffset(currOffset + Vector3(deltaTime, 0.0f, 0.0f));
 }
 
 // Render Objects
@@ -170,5 +174,8 @@ void TestScene::Render()
     //    glDrawArrays(GL_TRIANGLES, 0, model.getVerts().size()/3);
     //glPopMatrix();
 
-    renderer->DrawModel(model);
+    for (auto& obj : objects)
+    {
+        renderer->DrawObject(*obj);
+    }
 }

@@ -43,9 +43,6 @@
     <Filter Include="Source Files\Graphics">
       <UniqueIdentifier>{a49e3942-9566-4b05-9167-7e2d8dec8351}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\ModelLoader">
-      <UniqueIdentifier>{9a7abfa7-1fdb-4cc1-8fbd-6a5d77bb807c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\ModelLoader">
       <UniqueIdentifier>{4f0ec0b4-d925-4600-a61e-215a0defdab2}</UniqueIdentifier>
     </Filter>
@@ -78,6 +75,9 @@
     </Filter>
     <Filter Include="Source Files\ThirdParty">
       <UniqueIdentifier>{2f3ab3ee-8d2e-480f-b2dd-18768c78d25c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics\ModelLoader">
+      <UniqueIdentifier>{9a7abfa7-1fdb-4cc1-8fbd-6a5d77bb807c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -185,14 +185,11 @@
     <ClInclude Include="Include\Camera.hpp">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Include\object.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Include\TokenStream.h">
-      <Filter>Header Files\ModelLoader</Filter>
+      <Filter>Header Files\Graphics\ModelLoader</Filter>
     </ClInclude>
     <ClInclude Include="Include\Model.h">
-      <Filter>Header Files\ModelLoader</Filter>
+      <Filter>Header Files\Graphics\ModelLoader</Filter>
     </ClInclude>
     <ClInclude Include="Include\SOIL.h">
       <Filter>Header Files\SOIL</Filter>
@@ -230,7 +227,13 @@
     <ClInclude Include="Include\PrimitiveCube.hpp">
       <Filter>Header Files\Templates\PrimitiveObjects</Filter>
     </ClInclude>
-    <ClInclude Include="Include\PrimitiveBase.hpp">
+    <ClInclude Include="Include\Object.hpp">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DrawableObject.hpp">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\VertexObject.hpp">
       <Filter>Header Files\Templates\PrimitiveObjects</Filter>
     </ClInclude>
   </ItemGroup>

@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Camera.hpp" />
+    <ClInclude Include="Include\DrawableObject.hpp" />
     <ClInclude Include="Include\GenericApplication.hpp" />
     <ClInclude Include="Include\GenericMemory.hpp" />
     <ClInclude Include="Include\GenericMessageHandler.hpp" />
@@ -54,8 +55,8 @@
     <ClInclude Include="Include\MiniDawn.hpp" />
     <ClInclude Include="Include\GMiniDawnEngine.hpp" />
     <ClInclude Include="Include\Model.h" />
-    <ClInclude Include="Include\object.hpp" />
-    <ClInclude Include="Include\PrimitiveBase.hpp" />
+    <ClInclude Include="Include\Object.hpp" />
+    <ClInclude Include="Include\VertexObject.hpp" />
     <ClInclude Include="Include\PrimitiveCube.hpp" />
     <ClInclude Include="include\PrimitiveObjects.hpp" />
     <ClInclude Include="Include\Renderer.hpp" />
@@ -193,6 +194,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>PLATFORM_WINDOWS;NDEBUG;_WINDOWS;%(PreprocessorDefinitions);PLATFORM_WINDOWS;</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

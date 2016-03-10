@@ -70,25 +70,25 @@ void LegacyOpenGLRenderer::EndDrawing()
 //    glMatrixMode(GL_MODELVIEW); // Back to geometry just to be safe
 //}
 
-void LegacyOpenGLRenderer::DrawModel(Model& Model)
+void LegacyOpenGLRenderer::DrawModel(const Model& InModel)
 {
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-    if (Model.GetTexture().GetTexture())
+    
+    if (InModel.GetTexture().GetTexture())
     {
-        Texture& tex = Model.GetTexture();
+        const Texture& tex = InModel.GetTexture();
         glEnable(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D, Model.GetTexture().GetTexture());
+        glBindTexture(GL_TEXTURE_2D, InModel.GetTexture().GetTexture());
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glMatrixMode(GL_TEXTURE);
         glPushMatrix();
-        Vector3 &offset = tex.GetOffset(), &scale = tex.GetScale();
-        Rotation &rot = tex.GetRotation();
+        const Vector3 &offset = tex.GetOffset(), &scale = tex.GetScale();
+        const Rotation &rot = tex.GetRotation();
         glTranslatef(offset.x, offset.y, offset.z);
         glRotatef(rot.deg, rot.axis.x, rot.axis.y, rot.axis.z);
         glScalef(scale.x, scale.y, scale.z);
@@ -96,17 +96,17 @@ void LegacyOpenGLRenderer::DrawModel(Model& Model)
 
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
-        glVertexPointer(3, GL_FLOAT, 0, &(Model.GetVertices()[0]));
-        glNormalPointer(GL_FLOAT, 0, &(Model.GetNormals()[0]));
-        glTexCoordPointer(2, GL_FLOAT, 0, &(Model.GetTexCoords()[0]));
-        glDrawArrays(GL_TRIANGLES, 0, Model.GetVertices().size() / 3);
+        glVertexPointer(3, GL_FLOAT, 0, &(InModel.GetVertices()[0]));
+        glNormalPointer(GL_FLOAT, 0, &(InModel.GetNormals()[0]));
+        glTexCoordPointer(2, GL_FLOAT, 0, &(InModel.GetTexCoords()[0]));
+        glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(InModel.GetVertices().size()) / 3);
         //glDrawElements(GL_TRIANGLES, Model.GetIndicies().size(), GL_UNSIGNED_INT, &(cube.GetIndicies()[0]));
     glPopMatrix();
 
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_NORMAL_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    if (Model.GetTexture().GetTexture())
+    if (InModel.GetTexture().GetTexture())
     {
         glBindTexture(GL_TEXTURE_2D, NULL);
         glDisable(GL_TEXTURE_2D);
@@ -116,17 +116,83 @@ void LegacyOpenGLRenderer::DrawModel(Model& Model)
     }
 }
 
-void LegacyOpenGLRenderer::Translate(Vector3 & Trans)
+void LegacyOpenGLRenderer::DrawObject(const Object& InObject)
+{
+    const VertexObject* vo = InObject.GetVO();
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_NORMAL_ARRAY);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+    if (InObject.UsingTexture())
+    {
+        const Texture& tex = vo->GetTexture();
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, vo->GetTexture().GetTexture());
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glMatrixMode(GL_TEXTURE);
+        glPushMatrix();
+        const Vector3 &offset = tex.GetOffset(), &scale = tex.GetScale();
+        const Rotation &rot = tex.GetRotation();
+        glTranslatef(offset.x, offset.y, offset.z);
+        glRotatef(rot.deg, rot.axis.x, rot.axis.y, rot.axis.z);
+        glScalef(scale.x, scale.y, scale.z);
+    }
+
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    // Modify Geometry
+    Rotate(InObject.GetRotation().deg, InObject.GetRotation().axis);
+    Translate(InObject.GetPosition());
+    Scale(InObject.GetScale());
+    
+    // Setup Arrays
+    glVertexPointer(3, GL_FLOAT, 0, &(vo->GetVertices()[0]));
+    glNormalPointer(GL_FLOAT, 0, &(vo->GetNormals()[0]));
+    glTexCoordPointer(2, GL_FLOAT, 0, &(vo->GetTexCoords()[0]));
+
+    switch (vo->GetType())
+    {
+    case ObjectType::Model:
+        glDrawArrays(InObject.GetGLMode(), 0, static_cast<GLsizei>(vo->GetVertices().size()) / 3);
+        break;
+    case ObjectType::Primitive:
+        glDrawElements(InObject.GetGLMode(), static_cast<GLsizei>(vo->GetIndicies().size()), GL_UNSIGNED_INT, &(vo->GetIndicies()[0]));
+        break;
+    default:
+        // Unreachable code!
+        break;
+    }
+    
+    glPopMatrix();
+
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_VERTEX_ARRAY);
+
+    if (InObject.UsingTexture())
+    {
+        glBindTexture(GL_TEXTURE_2D, NULL);
+        glDisable(GL_TEXTURE_2D);
+        glMatrixMode(GL_TEXTURE);
+        glPopMatrix();
+        glMatrixMode(GL_MODELVIEW);
+    }
+}
+
+void LegacyOpenGLRenderer::Translate(const Vector3 & Trans)
 {
     glTranslatef(Trans.x, Trans.y, Trans.z);
 }
 
-void LegacyOpenGLRenderer::Rotate(float Deg, Vector3 & Rot)
+void LegacyOpenGLRenderer::Rotate(const float Deg, const Vector3 & Rot)
 {
     glRotatef(Deg, Rot.x, Rot.y, Rot.z);
 }
 
-void LegacyOpenGLRenderer::Scale(Vector3 & Scale)
+void LegacyOpenGLRenderer::Scale(const Vector3 & Scale)
 {
     glScalef(Scale.x, Scale.y, Scale.z);
 }

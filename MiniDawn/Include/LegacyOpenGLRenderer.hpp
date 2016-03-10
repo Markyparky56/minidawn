@@ -18,16 +18,16 @@ public:
     void StartDrawing(GLenum GLType);
     void EndDrawing() override;
 
-    //void DrawObject(Object& Obj) override;
-    void DrawModel(Model& Model) override;
+    void DrawObject(const Object& InObject) override;
+    void DrawModel(const Model& InModel) override;
 
-    void Translate(Vector3& Trans) override;
-    void Rotate(float Deg, Vector3& Rot) override;
-    void Scale(Vector3& Scale) override;
+    void Translate(const Vector3& Trans) override;
+    void Rotate(const float Deg, const Vector3& Rot) override;
+    void Scale(const Vector3& Scale) override;
 
     void Look() override;
 
-    // LEgacy function wrappers
+    // Legacy function wrappers
     void SetColour(Vector3& Col);
     void EnableLight(GLenum Light);
     void SetLightProperty(GLenum Light, GLenum LightProperty, GLfloat PropertyArray[]);
