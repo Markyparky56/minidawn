@@ -1,6 +1,7 @@
 #pragma once
 #include "Model.h"
-#include <memory>
+#include "UniquePtr.hpp"
+#include "SharedRef.hpp"
 
 // Basically an extension to the model class which stores position data
 class Object
@@ -24,14 +25,18 @@ public:
     inline void SetScale(Vector3& NewScale)     { scale = NewScale; }
     inline void SetRotation(Rotation& NewRot)   { rotation = NewRot; }
     inline void SetGLMode(GLuint NewGLMode)     { glMode = NewGLMode; }
-    inline void SetVO(VertexObject* NewModel)       { model = NewModel; }
+    inline void SetVO(VertexObject* NewModel)   { model = NewModel; }
 
-    inline const Vector3&  GetPosition() const  { return pos; }
-    inline const Vector3&  GetScale() const     { return scale; }
+    inline const Vector3& GetPosition() const   { return pos; }
+    inline       Vector3& GetPosition()         { return pos; }
+    inline const Vector3& GetScale() const      { return scale; }
+    inline       Vector3& GetScale()            { return scale; }
     inline const Rotation& GetRotation() const  { return rotation; }
-    inline const GLuint   GetGLMode() const     { return glMode; }
-    inline VertexObject* GetVO() const        { return model; };
-    inline bool  UsingTexture() const        { return textureEnabled; }
+    inline       Rotation& GetRotation()        { return rotation; }
+    inline const GLuint GetGLMode() const       { return glMode; }
+    inline       GLuint GetGLMode()             { return glMode; }
+    inline VertexObject* GetVO() const          { return model; }
+    inline bool  UsingTexture() const           { return textureEnabled; }
 
 private:
     VertexObject* model; // Use a pointer so we can share models between objects
@@ -42,5 +47,5 @@ private:
     bool textureEnabled;
     GLuint glMode; // If you're weird and want to use quads
 };
-using pObject = std::unique_ptr<Object>;
-using spObject = std::shared_ptr<Object>;
+using pObject = UniquePtr<Object>;
+using spObject = SharedPtr<Object>;

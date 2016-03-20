@@ -6,7 +6,7 @@ class PrimitiveCube : public VertexObject
 {
 public:
     PrimitiveCube()
-        : VertexObject(ObjectType::Primitive)
+        : VertexObject(ObjectType::PrimitiveIndexed)
     {
         vertices = { {
                 // Front Face

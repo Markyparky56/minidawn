@@ -4,6 +4,23 @@
 #include "dbout.hpp"
 #endif
 
+// Possibly implement a texture manager
+void LoadTexture(Texture& tex, char* filename)
+{
+    tex.SetTexture(SOIL_load_OGL_texture
+        (
+            filename,
+            SOIL_LOAD_AUTO,
+            SOIL_CREATE_NEW_ID,
+            SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT /*| SOIL_FLAG_INVERT_Y*/
+        ));
+
+    if (tex.GetTexture() == 0)
+    {
+        printf("SOIL loading error: '%s'\n", SOIL_last_result());
+    }
+}
+
 // Create Objects
 void TestScene::Setup()
 {
@@ -25,14 +42,32 @@ void TestScene::Setup()
     camera = std::make_unique<Camera>();
     camera->SetPosition(Vector3(0.0f, 0.0f, 5.0f));
     camera->SetUp(Vector3(0.0f, 1.0f, 0.0f));
+    camera->SetPitch(0.0f);
+    camera->SetRoll(0.0f);
+    camera->SetYaw(0.0f);
     camera->Update();
     renderer->SetCamera(camera.get());
     
+    skypshere = MakeUnique<Skysphere>(128, 64);
+    Texture skyTexture;
+    LoadTexture(skyTexture, "starsphere.png");
+    skypshere->SetSkysphereTexture(skyTexture);
+
+    //spObject obj(new Object);
+    //objects.push_back(obj);
+    //obj->SetVO(new Model);
+    //bool loadResult = static_cast<Model*>(obj->GetVO())->Load("models/teapot.obj", "crate.png");
+    //obj->EnableTexture();
+
     spObject obj(new Object);
-    objects.push_back(obj);
-    obj->SetVO(new Model);
-    bool loadResult = static_cast<Model*>(obj->GetVO())->Load("models/teapot.obj", "crate.png");
+    obj->SetVO(new PrimitiveUVSphere(256, 128));
+    Texture sphereTexture;
+    LoadTexture(sphereTexture, "4kworld.png");
+    obj->GetVO()->GetTexture() = sphereTexture;
+    obj->SetGLMode(GL_TRIANGLES);
     obj->EnableTexture();
+    objects.push_back(obj);
+    //obj->SetGLMode(GL_TRIANGLES);
 }
 
 // Logic
@@ -96,7 +131,7 @@ void TestScene::Update()
         camPos -= (Vector3(0.0f, 1.0f, 0.0f) * deltaTime * cameraSpeed);
     }
     
-    if (inputSystem->IsKeyDown(VK_ESCAPE)) // Hit escape to exit, so if we decide to lock the mouse we can still quit
+    if (inputSystem->IsKeyDown(VK_ESCAPE)) // Hit escape to exit, so if we've locked the mouse we can still quit
     {
         GMiniDawnEngine.RequestEnd();
     }
@@ -134,7 +169,7 @@ void TestScene::Update()
     camera->Update();
 
     Vector3 currOffset = objects[0]->GetVO()->GetTexture().GetOffset();
-    objects[0]->GetVO()->GetTexture().SetOffset(currOffset + Vector3(deltaTime, 0.0f, 0.0f));
+   // objects[0]->GetVO()->GetTexture().SetOffset(currOffset + Vector3(deltaTime, 0.0f, 0.0f));
 }
 
 // Render Objects
@@ -158,6 +193,14 @@ void TestScene::Render()
 
     renderer->Look();
 
+    glDisable(GL_LIGHT0);
+
+    static GLfloat fullAmbientLight[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    loglRenderer->SetLightProperty(GL_LIGHT1, GL_AMBIENT, fullAmbientLight);
+    glEnable(GL_LIGHT1);
+    renderer->DrawSkysphere(*skypshere);
+    glDisable(GL_LIGHT1);
+
     // Directional Light
     static GLfloat dirLight_Diffuse[] = { 0.75f, 0.75f, 0.75f, 1.0f };
     static GLfloat dirLight_Position[] = { 1.0f, 1.0f, 0.25f, 0.0f };
@@ -166,13 +209,6 @@ void TestScene::Render()
     loglRenderer->EnableLight(GL_LIGHT0);
     
     glColor3f(1.0f, 1.0f, 1.0f);
-    //glPushMatrix();
-    //    glScalef(0.25f, 0.25f, 0.25f);
-    //    glVertexPointer(3, GL_FLOAT, 0, &(model.getVerts()[0]) );
-    //    glNormalPointer(GL_FLOAT, 0, &(model.getNorms()[0]) );
-    //    glTexCoordPointer(2, GL_FLOAT, 0, &(model.getTexCoords()[0]) );
-    //    glDrawArrays(GL_TRIANGLES, 0, model.getVerts().size()/3);
-    //glPopMatrix();
 
     for (auto& obj : objects)
     {

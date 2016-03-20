@@ -3,13 +3,13 @@
 
 
 // INCLUDES //
-#include <Windows.h>
+#include <Windows.h> // Ew
 #include <fstream>
 #include <string>
 #include <vector>
-#include <gl/gl.h>
+#include <gl/gl.h> // Eck
 #include <gl/glu.h>
-//using namespace std; // This is bad
+
 using std::vector;
 using std::string;
 

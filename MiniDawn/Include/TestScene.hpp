@@ -2,14 +2,13 @@
 // Engine Includes
 #include "Scene.hpp"
 #include "LegacyOpenGLRenderer.hpp"
+#include "PrimitiveObjects.hpp"
+#include "Object.hpp"
+#include "Skysphere.hpp"
 
 // STL Collections
 #include <vector>
 #include <unordered_map>
-
-// Additional includes
-#include "PrimitiveObjects.hpp"
-#include "Object.hpp"
 
 struct GenericWindowDefinition;
 
@@ -38,9 +37,8 @@ private:
     float cameraSpeed;
 
     std::vector<spObject> objects;
-    // TODO: Rewrite Object class to use Model
-    /*Model model;
-    PrimitiveCube cube;*/
+    //UniquePtr<Skybox> skybox;
+    UniquePtr<Skysphere> skypshere;
 
     SharedPtr<GenericWindowDefinition> windowDef;
 };

@@ -207,6 +207,7 @@ WindowsApplication::WindowsApplication(const HINSTANCE HInstance, const HICON Ic
     // maybe this should be done by the engine itself?
     input = MakeShareable(new InputSystem);
     renderer = MakeShareable(new LegacyOpenGLRenderer);
+    renderer->Initialise();
 }
 
 bool WindowsApplication::RegisterWindowsClass(const HINSTANCE HInstance, const HICON HIcon)

@@ -236,5 +236,20 @@
     <ClInclude Include="Include\VertexObject.hpp">
       <Filter>Header Files\Templates\PrimitiveObjects</Filter>
     </ClInclude>
+    <ClInclude Include="Include\UniqueObj.hpp">
+      <Filter>Header Files\Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\UniquePtr.hpp">
+      <Filter>Header Files\Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Skybox.hpp">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\PrimitiveUVSphere.hpp">
+      <Filter>Header Files\Templates\PrimitiveObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Skysphere.hpp">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

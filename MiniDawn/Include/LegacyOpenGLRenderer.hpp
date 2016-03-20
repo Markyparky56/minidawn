@@ -20,6 +20,8 @@ public:
 
     void DrawObject(const Object& InObject) override;
     void DrawModel(const Model& InModel) override;
+    void DrawSkybox(const Skybox& InSkybox) override;
+    void DrawSkysphere(const Skysphere& InSkysphere) override;
 
     void Translate(const Vector3& Trans) override;
     void Rotate(const float Deg, const Vector3& Rot) override;

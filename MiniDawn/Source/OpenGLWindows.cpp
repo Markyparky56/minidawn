@@ -43,8 +43,11 @@ void ResizeGLWindow(int Width, int Height)
     glLoadIdentity();
 
     // Calculate aspect ratio
-    gluPerspective(90.0f, static_cast<GLfloat>(Width) / static_cast<GLfloat>(Height), 1, 150.0f);
-
+#ifdef _DEBUG
+    gluPerspective(90.0f, static_cast<GLfloat>(Width) / static_cast<GLfloat>(Height), 0.001f, 150.0f);
+#else
+    gluPerspective(90.0f, static_cast<GLfloat>(Width) / static_cast<GLfloat>(Height), 0.01f, 150.0f);
+#endif
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }

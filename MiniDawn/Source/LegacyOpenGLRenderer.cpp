@@ -2,6 +2,8 @@
 
 void LegacyOpenGLRenderer::Initialise()
 {
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
 }
 
 void LegacyOpenGLRenderer::Shutdown()
@@ -19,56 +21,6 @@ void LegacyOpenGLRenderer::EndDrawing()
 {
     glEnd();
 }
-
-// TODO: Update for vertex arrays
-//void LegacyOpenGLRenderer::DrawObject(Object& Obj)
-//{
-//    if (Obj.UsingTexture())
-//    {
-//        Texture& tex = Obj.getTexture();
-//        glEnable(GL_TEXTURE_2D);
-//        glBindTexture(GL_TEXTURE_2D, tex.getTexture());
-//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, tex.getUProperty());
-//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, tex.getVProperty());
-//        glMatrixMode(GL_TEXTURE);
-//        glPushMatrix();
-//        Translate(tex.getOffset());
-//        Rotate(tex.getRotation().deg, tex.getRotation().axis);
-//        Scale(tex.getScale());
-//    }
-//    else
-//    {
-//        glBindTexture(GL_TEXTURE_2D, NULL);
-//        glDisable(GL_TEXTURE_2D);
-//    }
-//    glMatrixMode(GL_MODELVIEW);
-//    glPushMatrix(); // Modify Geometry
-//    Rotate(Obj.getRotation().deg, Obj.getRotation().axis);
-//    Translate(Obj.getPosition());
-//    Scale(Obj.getScale());
-//    glBegin(Obj.getGLMode());
-//
-//    auto& verts = Obj.getVerts();
-//    auto& normals = Obj.getNormals();
-//    auto& uvs = Obj.getUVs();
-//    auto& colours = Obj.getColours();
-//    for (auto vert = verts.begin(); vert != verts.end(); vert++)
-//    {
-//        int place = std::distance(verts.begin(), vert);
-//        Vector3& norm = normals[place];
-//        Vector3& col = colours[place];
-//        //Vector2& uv;  if (obj.UsingTexture()) { uv = uvs[place]; }
-//        glNormal3f(norm.x, norm.y, norm.z);
-//        glColor3f(col.x, col.y, col.z);
-//        if (Obj.UsingTexture()) { glTexCoord2f(uvs[place].x, uvs[place].y); }
-//        glVertex3f(vert->x, vert->y, vert->z);
-//    }
-//    glEnd();
-//    glPopMatrix(); // Undo Geometry
-//    glMatrixMode(GL_TEXTURE);
-//    glPopMatrix(); // Undo Texture
-//    glMatrixMode(GL_MODELVIEW); // Back to geometry just to be safe
-//}
 
 void LegacyOpenGLRenderer::DrawModel(const Model& InModel)
 {
@@ -116,6 +68,110 @@ void LegacyOpenGLRenderer::DrawModel(const Model& InModel)
     }
 }
 
+void LegacyOpenGLRenderer::DrawSkybox(const Skybox & InSkybox)
+{
+    // Turn Depth off
+    glDisable(GL_DEPTH_TEST);
+    const VertexObject* vo = InSkybox.GetCube();
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_NORMAL_ARRAY);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+    const Texture& tex = vo->GetTexture();
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, vo->GetTexture().GetTexture());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glMatrixMode(GL_TEXTURE);
+    glPushMatrix(); // Texture matrix manipulation
+    const Vector3 &offset = tex.GetOffset(), &scale = tex.GetScale();
+    const Rotation &rot = tex.GetRotation();
+    glTranslatef(offset.x, offset.y, offset.z);
+    glRotatef(rot.deg, rot.axis.x, rot.axis.y, rot.axis.z);
+    glScalef(scale.x, scale.y, scale.z);
+    glMatrixMode(GL_MODELVIEW);
+
+    // Translate to the camera position
+    glPushMatrix();
+    Translate(cam->GetPosition());
+
+    // Setup Arrays
+    glVertexPointer(3, GL_FLOAT, 0, &(vo->GetVertices()[0]));
+    glNormalPointer(GL_FLOAT, 0, &(vo->GetNormals()[0]));
+    glTexCoordPointer(2, GL_FLOAT, 0, &(vo->GetTexCoords()[0]));
+
+    // Draw!
+    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(vo->GetIndicies().size()), GL_UNSIGNED_INT, &(vo->GetIndicies()[0]));
+
+    glPopMatrix(); 
+
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_VERTEX_ARRAY);
+
+    glBindTexture(GL_TEXTURE_2D, NULL);
+    glDisable(GL_TEXTURE_2D);
+    glMatrixMode(GL_TEXTURE);
+    glPopMatrix(); // Undo Texture matrix manipulation
+    glMatrixMode(GL_MODELVIEW);
+    // Turn Depth test on again
+    glEnable(GL_DEPTH_TEST);
+}
+
+void LegacyOpenGLRenderer::DrawSkysphere(const Skysphere & InSkysphere)
+{
+    // Turn Depth off
+    glDisable(GL_DEPTH_TEST);
+    const VertexObject* vo = InSkysphere.GetSphere();
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_NORMAL_ARRAY);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+    const Texture& tex = vo->GetTexture();
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, vo->GetTexture().GetTexture());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glMatrixMode(GL_TEXTURE);
+    glPushMatrix(); // Texture matrix manipulation
+    const Vector3 &offset = tex.GetOffset(), &scale = tex.GetScale();
+    const Rotation &rot = tex.GetRotation();
+    glTranslatef(offset.x, offset.y, offset.z);
+    glRotatef(rot.deg, rot.axis.x, rot.axis.y, rot.axis.z);
+    glScalef(scale.x, scale.y, scale.z);
+    glMatrixMode(GL_MODELVIEW);
+
+    // Translate to the camera position
+    glPushMatrix();
+    Translate(cam->GetPosition());
+
+    // Setup Arrays
+    glVertexPointer(3, GL_FLOAT, 0, &(vo->GetVertices()[0]));
+    glNormalPointer(GL_FLOAT, 0, &(vo->GetNormals()[0]));
+    glTexCoordPointer(2, GL_FLOAT, 0, &(vo->GetTexCoords()[0]));
+
+    // Draw!
+    glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vo->GetVertices().size()) / 3);
+
+    glPopMatrix();
+
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_VERTEX_ARRAY);
+
+    glBindTexture(GL_TEXTURE_2D, NULL);
+    glDisable(GL_TEXTURE_2D);
+    glMatrixMode(GL_TEXTURE);
+    glPopMatrix(); // Undo Texture matrix manipulation
+    glMatrixMode(GL_MODELVIEW);
+    // Turn Depth test on again
+    glEnable(GL_DEPTH_TEST);
+}
+
 void LegacyOpenGLRenderer::DrawObject(const Object& InObject)
 {
     const VertexObject* vo = InObject.GetVO();
@@ -156,9 +212,10 @@ void LegacyOpenGLRenderer::DrawObject(const Object& InObject)
     switch (vo->GetType())
     {
     case ObjectType::Model:
+    case ObjectType::PrimitiveUnIndexed:
         glDrawArrays(InObject.GetGLMode(), 0, static_cast<GLsizei>(vo->GetVertices().size()) / 3);
         break;
-    case ObjectType::Primitive:
+    case ObjectType::PrimitiveIndexed:
         glDrawElements(InObject.GetGLMode(), static_cast<GLsizei>(vo->GetIndicies().size()), GL_UNSIGNED_INT, &(vo->GetIndicies()[0]));
         break;
     default:

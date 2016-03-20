@@ -6,7 +6,7 @@
 #include <gl/GL.h>
 #include "Texture.hpp"
 
-enum class ObjectType { Primitive, Model };
+enum class ObjectType { PrimitiveIndexed, PrimitiveUnIndexed, Model };
 
 class VertexObject
 {

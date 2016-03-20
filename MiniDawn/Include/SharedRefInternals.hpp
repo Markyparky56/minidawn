@@ -10,31 +10,6 @@ enum class ESPMode
     ThreadSafe = 1
 };
 
-// RemoveReference
-template< typename T > struct RemoveReference { typedef T Type; };
-template< typename T > struct RemoveReference<T&> { typedef T Type; };
-template< typename T > struct RemoveReference<T&&> { typedef T Type; };
-
-// MoveTemp
-template< typename T >
-inline typename RemoveReference<T>::Type&& MoveTemp(T&& Obj)
-{
-    return (typename RemoveReference<T>::Type&&)Obj;
-}
-
-// Forward
-template< typename T>
-inline T&& Forward(typename RemoveReference<T>::Type& Obj)
-{
-    return (T&&)Obj;
-}
-
-template< typename T>
-inline T&& Forward(typename RemoveReference<T>::Type&& Obj)
-{
-    return (T&&)Obj;
-}
-
 template< class ObjectType > class SharedRef;
 template< class ObjectType > class SharedPtr;
 template< class ObjectType > class WeakPtr;

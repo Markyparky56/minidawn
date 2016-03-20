@@ -3,6 +3,8 @@
 #include "Object.hpp"
 #include "Model.h"
 #include "Camera.hpp"
+#include "Skybox.hpp"
+#include "Skysphere.hpp"
 #include <vector>
 
 class Renderer
@@ -22,6 +24,9 @@ public:
 
     virtual void DrawObject(const Object& InObject) {}
     virtual void DrawModel(const Model& InModel) {}
+    virtual void DrawSkybox(const Skybox& InSkybox) {}
+    virtual void DrawSkysphere(const Skysphere& InSkysphere) {}
+
 
     virtual void Translate(const Vector3& Trans) {}
     virtual void Rotate(const float Deg, const Vector3& Rot) {}
@@ -32,5 +37,4 @@ public:
 
 protected:
     Camera* cam;
-
 };
