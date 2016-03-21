@@ -4,6 +4,8 @@
 #include "dbout.hpp"
 #endif
 
+Camera* DrawQueueSort::cam = nullptr;
+
 // Possibly implement a texture manager
 void LoadTexture(Texture& tex, char* filename)
 {
@@ -19,6 +21,18 @@ void LoadTexture(Texture& tex, char* filename)
     {
         printf("SOIL loading error: '%s'\n", SOIL_last_result());
     }
+}
+
+
+
+std::priority_queue<spObject, std::deque<spObject>, DrawQueueSort> GetDrawQueue(std::vector<spObject>& objects)
+{
+    std::priority_queue<spObject, std::deque<spObject>, DrawQueueSort> drawQueue;
+    for (auto obj : objects)
+    {
+        drawQueue.push(obj);
+    }
+    return drawQueue;
 }
 
 // Create Objects
@@ -39,14 +53,16 @@ void TestScene::Setup()
     camRot.roll = 0.0f;
     cameraSpeed = 4.0f;
 
-    camera = std::make_unique<Camera>();
+    camera = MakeUnique<Camera>();
     camera->SetPosition(Vector3(0.0f, 0.0f, 5.0f));
     camera->SetUp(Vector3(0.0f, 1.0f, 0.0f));
     camera->SetPitch(0.0f);
     camera->SetRoll(0.0f);
     camera->SetYaw(0.0f);
     camera->Update();
-    renderer->SetCamera(camera.get());
+    renderer->SetCamera(camera.Get());
+    DrawQueueSort::cam = camera.Get();
+
     
     skypshere = MakeUnique<Skysphere>(128, 64);
     Texture skyTexture;
@@ -59,14 +75,26 @@ void TestScene::Setup()
     //bool loadResult = static_cast<Model*>(obj->GetVO())->Load("models/teapot.obj", "crate.png");
     //obj->EnableTexture();
 
-    spObject obj(new Object);
-    obj->SetVO(new PrimitiveUVSphere(256, 128));
+    spObject world(new Object);
+    world->SetVO(new PrimitiveUVSphere(256, 128));
     Texture sphereTexture;
     LoadTexture(sphereTexture, "4kworld.png");
-    obj->GetVO()->GetTexture() = sphereTexture;
-    obj->SetGLMode(GL_TRIANGLES);
-    obj->EnableTexture();
-    objects.push_back(obj);
+    world->GetVO()->GetTexture() = sphereTexture;
+    world->SetGLMode(GL_TRIANGLES);
+    world->EnableTexture();
+    world->SetName(L"World");
+    objects.push_back(world);
+
+    spObject disc(new Object);
+    disc->SetVO(new PrimitiveDisc(64));
+    Texture discTexture;
+    LoadTexture(discTexture, "crate.png");
+    disc->GetVO()->GetTexture() = discTexture;
+    disc->SetGLMode(GL_TRIANGLE_FAN);
+    disc->SetPosition(Vector3(2.5f, 0.0f, 0.0f));
+    disc->EnableTexture();
+    disc->SetName(L"Disc");
+    objects.push_back(disc);
     //obj->SetGLMode(GL_TRIANGLES);
 }
 
@@ -74,7 +102,7 @@ void TestScene::Setup()
 void TestScene::Update()
 {
     Rotation oldRot = objects[0]->GetRotation();
-    oldRot.deg += 15.0f * deltaTime;
+    oldRot.deg += -15.0f * deltaTime;
     objects[0]->SetRotation(oldRot);
 
     // Handle input
@@ -156,12 +184,6 @@ void TestScene::Update()
         SetCursorPos(pt.x, pt.y);
     }
 
-    //DebugOutput(L"oldPos(%f, %f)\n", oldPos.x, oldPos.y);
-    //DebugOutput(L"newPos(%f, %f)\n", newPos.x, newPos.y);
-    //DebugOutput(L"dir(%f, %f)\n", dir.x, dir.y);
-    //DebugOutput(L"CamRot - Roll: %f - Pitch: %f - Yaw: %f\n", camRot.roll, camRot.pitch, camRot.yaw);
-    //DebugOutput(L"#EndFrame\n");
-
     camera->SetPosition(camPos);
     camera->SetPitch(camRot.pitch);
     camera->SetYaw(camRot.yaw);
@@ -170,6 +192,10 @@ void TestScene::Update()
 
     Vector3 currOffset = objects[0]->GetVO()->GetTexture().GetOffset();
    // objects[0]->GetVO()->GetTexture().SetOffset(currOffset + Vector3(deltaTime, 0.0f, 0.0f));
+
+    Rotation discRotation = objects[1]->GetRotation();
+    discRotation.deg += 45.0f * deltaTime;
+    objects[1]->SetRotation(discRotation);
 }
 
 // Render Objects
@@ -210,8 +236,13 @@ void TestScene::Render()
     
     glColor3f(1.0f, 1.0f, 1.0f);
 
-    for (auto& obj : objects)
+    // Assemble draw queue
+    drawQueue = GetDrawQueue(objects);
+    while (!drawQueue.empty())
     {
-        renderer->DrawObject(*obj);
+        DebugOutput(L"Draw Queue Length: %d\n", drawQueue.size());
+        DebugOutput(L"Drawing object: %s\n", drawQueue.top()->GetName().c_str());
+        renderer->DrawObject(*drawQueue.top());        
+        drawQueue.pop();        
     }
 }

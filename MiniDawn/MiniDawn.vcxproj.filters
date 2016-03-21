@@ -251,5 +251,8 @@
     <ClInclude Include="Include\Skysphere.hpp">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Include\PrimitiveDisc.hpp">
+      <Filter>Header Files\Templates\PrimitiveObjects</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -200,8 +200,8 @@ void LegacyOpenGLRenderer::DrawObject(const Object& InObject)
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     // Modify Geometry
-    Rotate(InObject.GetRotation().deg, InObject.GetRotation().axis);
     Translate(InObject.GetPosition());
+    Rotate(InObject.GetRotation().deg, InObject.GetRotation().axis);
     Scale(InObject.GetScale());
     
     // Setup Arrays
