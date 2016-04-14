@@ -14,6 +14,7 @@ public:
         , scale(1.0f, 1.0f, 1.0f)
         , glMode(GL_TRIANGLES)
         , textureEnabled(false)
+        , transparencyEnabled(false)
         , model(nullptr)
     {}
     ~Object()
@@ -21,6 +22,8 @@ public:
 
     inline void EnableTexture()       { textureEnabled = true; }
     inline void DisableTexture()      { textureEnabled = false; }
+    inline void EnableTransparency()  { transparencyEnabled = true; }
+    inline void DisableTransparency() { transparencyEnabled = false; }
     
     inline void SetPosition(Vector3& NewPos)    { pos = NewPos; }
     inline void SetScale(Vector3& NewScale)     { scale = NewScale; }
@@ -39,8 +42,9 @@ public:
     inline       GLuint GetGLMode()             { return glMode; }
     inline VertexObject* GetVO() const          { return model; }
     inline bool  UsingTexture() const           { return textureEnabled; }
-    inline const std::wstring& GetName() const    { return name; }
-    inline       std::wstring& GetName()          { return name; }
+    inline bool  UsingTransparency() const      { return transparencyEnabled; }
+    inline const std::wstring& GetName() const  { return name; }
+    inline       std::wstring& GetName()        { return name; }
 
 private:
     VertexObject* model; // Use a pointer so we can share models between objects
@@ -50,6 +54,7 @@ private:
     std::wstring name;
 
     bool textureEnabled;
+    bool transparencyEnabled;
     GLuint glMode; // If you're weird and want to use quads
 };
 using pObject = UniquePtr<Object>;

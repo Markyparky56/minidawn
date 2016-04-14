@@ -48,8 +48,8 @@ void MemswapImpl(void * Ptr1, void * Ptr2, size_t Size)
             return;
         }
     }
-
-    uint32_t CommonAlignment = std::fmin(CountTrailingZeros(Union1.PtrUnit - Union2.PtrUnit), 3u);
+    
+    uint32_t CommonAlignment = static_cast<uint32_t>(std::fmin(CountTrailingZeros(static_cast<uint32_t>(Union1.PtrUnit) - static_cast<uint32_t>(Union2.PtrUnit)), 3u));
     switch (CommonAlignment)
     {
     default:

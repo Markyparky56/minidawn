@@ -55,7 +55,7 @@ public:
                 std::vector<Vector2> uvs;
                 for(auto& p : points)
                 {
-                    Vector2 uv(0.5f + atan2(p.z, - p.x) / PI2, 0.5 - asin(p.y) / PI);
+                    Vector2 uv(0.5f + atan2f(p.z, - p.x) / static_cast<float>(PI2), 0.5f - asinf(p.y) / static_cast<float>(PI));
                     uvs.push_back(uv);
                 }
 

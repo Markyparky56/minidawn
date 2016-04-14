@@ -12,7 +12,7 @@ void LoadTexture(Texture& tex, char* filename)
     tex.SetTexture(SOIL_load_OGL_texture
         (
             filename,
-            SOIL_LOAD_AUTO,
+            SOIL_LOAD_RGBA,
             SOIL_CREATE_NEW_ID,
             SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT /*| SOIL_FLAG_INVERT_Y*/
         ));
@@ -22,8 +22,6 @@ void LoadTexture(Texture& tex, char* filename)
         printf("SOIL loading error: '%s'\n", SOIL_last_result());
     }
 }
-
-
 
 std::priority_queue<spObject, std::deque<spObject>, DrawQueueSort> GetDrawQueue(std::vector<spObject>& objects)
 {
@@ -42,8 +40,8 @@ void TestScene::Setup()
     screenCentre = Vector2(windowDef->Width / 2, windowDef->Height / 2);
 
     buttonPressGracePeriod = 0.2f;
-    lockMouseLastChangeTime = gameTime;
-    wireframeModeLastChangeTime = gameTime;
+    lockMouseLastChangeTime = static_cast<float>(gameTime);
+    wireframeModeLastChangeTime = static_cast<float>(gameTime);
     lockMouse = true;
     ShowCursor(!lockMouse);
     
@@ -85,6 +83,18 @@ void TestScene::Setup()
     world->SetName(L"World");
     objects.push_back(world);
 
+    spObject clouds(new Object);
+    clouds->SetVO(new PrimitiveUVSphere(256, 128));
+    clouds->SetScale(Vector3(1.01f, 1.01f, 1.01f));
+    Texture cloudTexture;
+    LoadTexture(cloudTexture, "clouds.png");
+    clouds->GetVO()->GetTexture() = cloudTexture;
+    clouds->SetGLMode(GL_TRIANGLES);
+    clouds->EnableTexture();
+    clouds->EnableTransparency();
+    clouds->SetName(L"Clouds");
+    objects.push_back(clouds);
+
     spObject disc(new Object);
     disc->SetVO(new PrimitiveDisc(64));
     Texture discTexture;
@@ -111,7 +121,7 @@ void TestScene::Update()
         if (gameTime >= (wireframeModeLastChangeTime + buttonPressGracePeriod))
         {
             wireframeMode = !wireframeMode;
-            wireframeModeLastChangeTime = gameTime;
+            wireframeModeLastChangeTime = static_cast<float>(gameTime);
         }
     }
     if (inputSystem->IsKeyDown(VK_F1))
@@ -120,7 +130,7 @@ void TestScene::Update()
         {
             lockMouse = !lockMouse;
             ShowCursor(!lockMouse);
-            lockMouseLastChangeTime = gameTime;
+            lockMouseLastChangeTime = static_cast<float>(gameTime);
         }
     }
 
@@ -165,8 +175,8 @@ void TestScene::Update()
     }
 
     // Grab the mouse position
-    newPos.x = inputSystem->GetMouseX();
-    newPos.y = inputSystem->GetMouseY();
+    newPos.x = static_cast<float>(inputSystem->GetMouseX());
+    newPos.y = static_cast<float>(inputSystem->GetMouseY());
 
     // Convert mouse movement to camera rotation
     Vector2 dir = screenCentre - newPos;
@@ -178,8 +188,8 @@ void TestScene::Update()
     if (lockMouse)
     {
         POINT pt;
-        pt.x = screenCentre.x;
-        pt.y = screenCentre.y;
+        pt.x = static_cast<LONG>(screenCentre.x);
+        pt.y = static_cast<LONG>(screenCentre.y);
         ClientToScreen(static_cast<HWND>(parentApp->GetActiveWindow()->getHwnd()), &pt);
         SetCursorPos(pt.x, pt.y);
     }
@@ -190,12 +200,12 @@ void TestScene::Update()
     camera->SetRoll(camRot.roll);
     camera->Update();
 
-    Vector3 currOffset = objects[0]->GetVO()->GetTexture().GetOffset();
-   // objects[0]->GetVO()->GetTexture().SetOffset(currOffset + Vector3(deltaTime, 0.0f, 0.0f));
+    Vector3 currOffset = objects[1]->GetVO()->GetTexture().GetOffset();
+    objects[1]->GetVO()->GetTexture().SetOffset(currOffset + Vector3(deltaTime*0.01, 0.0f, 0.0f));
 
-    Rotation discRotation = objects[1]->GetRotation();
+    Rotation discRotation = objects[2]->GetRotation();
     discRotation.deg += 45.0f * deltaTime;
-    objects[1]->SetRotation(discRotation);
+    objects[2]->SetRotation(discRotation); // Explicitly accessing an object is not advisable, since any change can throw it off
 }
 
 // Render Objects

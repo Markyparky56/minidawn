@@ -5,12 +5,12 @@ void Camera::Update()
     float cosRoll, cosPitch, cosYaw;
     float sinRoll, sinPitch, sinYaw;
 
-    cosRoll     = cosf(roll *PI / 180);
-    cosPitch    = cosf(pitch*PI / 180);
-    cosYaw      = cosf(yaw  *PI / 180);
-    sinRoll     = sinf(roll *PI / 180);
-    sinPitch    = sinf(pitch*PI / 180);
-    sinYaw      = sinf(yaw  *PI / 180);
+    cosRoll     = cosf(roll *static_cast<float>(PI) / 180);
+    cosPitch    = cosf(pitch*static_cast<float>(PI) / 180);
+    cosYaw      = cosf(yaw  *static_cast<float>(PI) / 180);
+    sinRoll     = sinf(roll *static_cast<float>(PI) / 180);
+    sinPitch    = sinf(pitch*static_cast<float>(PI) / 180);
+    sinYaw      = sinf(yaw  *static_cast<float>(PI) / 180);
 
     // I have no idea how these work, magic? Probably magic.
     forward.x = sinYaw * cosPitch;

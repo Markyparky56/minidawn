@@ -4,6 +4,7 @@ void LegacyOpenGLRenderer::Initialise()
 {
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Standard alpha blending transparency
 }
 
 void LegacyOpenGLRenderer::Shutdown()
@@ -178,6 +179,12 @@ void LegacyOpenGLRenderer::DrawObject(const Object& InObject)
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    if (InObject.UsingTransparency())
+    {
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Standard alpha blending transparency
+    }
 
     if (InObject.UsingTexture())
     {
@@ -228,6 +235,10 @@ void LegacyOpenGLRenderer::DrawObject(const Object& InObject)
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     glDisableClientState(GL_NORMAL_ARRAY);
     glDisableClientState(GL_VERTEX_ARRAY);
+    if (InObject.UsingTransparency())
+    {
+        glDisable(GL_BLEND);
+    }
 
     if (InObject.UsingTexture())
     {

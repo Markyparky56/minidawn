@@ -128,7 +128,7 @@ int32_t WindowsApplication::ProcessMessage(HWND hwnd, uint32_t msg, WPARAM wPara
             }
         }
     }
-    return DefWindowProc(hwnd, msg, wParam, lParam);
+    return static_cast<int32_t>(DefWindowProc(hwnd, msg, wParam, lParam));
 }
 
 int32_t WindowsApplication::ProcessDeferredMessage(const DeferredWindowsMessage & DeferredMessage)
@@ -146,13 +146,13 @@ int32_t WindowsApplication::ProcessDeferredMessage(const DeferredWindowsMessage 
         {
         case WM_KEYDOWN:
             {
-                input->SetKeyDown(wParam);
+                input->SetKeyDown(static_cast<uint32_t>(wParam));
                 return 0;
             }
         case WM_KEYUP:
             {
                 // Pass to the input manager
-                input->SetKeyUp(wParam);
+                input->SetKeyUp(static_cast<uint32_t>(wParam));
                 return 0;
             }
         case WM_MOUSEMOVE:
@@ -226,6 +226,6 @@ bool WindowsApplication::RegisterWindowsClass(const HINSTANCE HInstance, const H
     wcex.lpszClassName = L"WindowClass";
     wcex.lpszMenuName = NULL;
     wcex.hIconSm = NULL; // static_cast<HICON>(hIconSm);
-
-    return RegisterClassEx(&wcex); // Performance warning
+    
+    return RegisterClassEx(&wcex) != NULL;
 }

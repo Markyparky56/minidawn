@@ -55,7 +55,7 @@ public:
         texCoords.push_back(0.5f);
 
         float theta = 0.0f;
-        for (int i = 0; i < segments + 1; i++)
+        for (unsigned int i = 0; i < segments + 1; i++)
         {
             // Find point on edge
             Vector3 xyz(sinf(theta), 0.0f, cosf(theta));
@@ -92,7 +92,7 @@ public:
         indicies.clear();
         texCoords.clear();
 
-        float thetaStep = PI2 / static_cast<float>(segments);
+        float thetaStep = static_cast<float>(PI2) / static_cast<float>(segments);
 
         int numVerts = (segments) * 3; // Edge points + center + return to start
         int numTexCoords = (numVerts / 3) * 2;
@@ -102,7 +102,7 @@ public:
         texCoords.reserve(numVerts);
 
         float theta1 = 0.0f, theta2 = thetaStep;
-        for (int i = 0; i < segments + 1; i++)
+        for (unsigned int i = 0; i < segments + 1; i++)
         {
             // Find the two points for this segment
             Vector3 xyz1, xyz2;

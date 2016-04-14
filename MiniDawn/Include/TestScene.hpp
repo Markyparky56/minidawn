@@ -28,7 +28,22 @@ public:
         float distanceLhs = std::sqrtf(diffLhs.dot(diffLhs));
         float distanceRhs = std::sqrtf(diffRhs.dot(diffRhs));
 
-        return distanceLhs < distanceRhs;
+        if (lhs->UsingTransparency() &&  rhs->UsingTransparency()
+        || !lhs->UsingTransparency() && !rhs->UsingTransparency())
+        {
+            return distanceLhs < distanceRhs;
+        }
+        else
+        {
+            if (lhs->UsingTransparency())
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 };
 
