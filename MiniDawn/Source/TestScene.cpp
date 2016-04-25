@@ -1,8 +1,6 @@
 #include "TestScene.hpp"
 #include "GMiniDawnEngine.hpp"
-#ifdef _DEBUG
 #include "dbout.hpp"
-#endif
 
 Camera* DrawQueueSort::cam = nullptr;
 
@@ -425,21 +423,21 @@ void TestScene::Render()
     glDisable(GL_LIGHT1);
 
     // Directional Light
-    static GLfloat dirLight_Diffuse[] = { 0.75f, 0.75f, 0.75f, 1.0f };
-    static GLfloat dirLight_Position[] = { 1.0f, 1.0f, 0.25f, 0.0f };
-    lOGLRenderer->SetLightProperty(GL_LIGHT0, GL_DIFFUSE, dirLight_Diffuse);
-    lOGLRenderer->SetLightProperty(GL_LIGHT0, GL_POSITION, dirLight_Position);
-    lOGLRenderer->EnableLight(GL_LIGHT0);
+    //static GLfloat dirLight_Diffuse[] = { 0.75f, 0.75f, 0.75f, 1.0f };
+    //static GLfloat dirLight_Position[] = { 1.0f, 1.0f, 0.25f, 0.0f };
+    //lOGLRenderer->SetLightProperty(GL_LIGHT0, GL_DIFFUSE, dirLight_Diffuse);
+    //lOGLRenderer->SetLightProperty(GL_LIGHT0, GL_POSITION, dirLight_Position);
+    //lOGLRenderer->EnableLight(GL_LIGHT0);
 
     // Point light from the sun
-    static GLfloat pointLight_Ambient[] = { 0.3f, 0.3f, 0.3f, 1.0f };
-    static GLfloat pointLight_Diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    static GLfloat pointLight_Ambient[] = { 0.4f, 0.4f, 0.4f, 1.0f };
+    static GLfloat pointLight_Diffuse[] = { 1.0f, 1.0f, 0.8f, 1.0f };
     static GLfloat pointLight_Position[] = { 0.0f, 0.0f, 0.0f, 1.0f };
     lOGLRenderer->SetLightProperty(GL_LIGHT2, GL_AMBIENT, pointLight_Ambient);
     lOGLRenderer->SetLightProperty(GL_LIGHT2, GL_DIFFUSE, pointLight_Diffuse);
     lOGLRenderer->SetLightProperty(GL_LIGHT2, GL_POSITION, pointLight_Position);
     lOGLRenderer->SetLightProperty(GL_LIGHT2, GL_CONSTANT_ATTENUATION, 1.0f);
-    lOGLRenderer->SetLightProperty(GL_LIGHT2, GL_LINEAR_ATTENUATION, 0.125f);
+    lOGLRenderer->SetLightProperty(GL_LIGHT2, GL_LINEAR_ATTENUATION, 0.005f);
     lOGLRenderer->SetLightProperty(GL_LIGHT2, GL_QUADRATIC_ATTENUATION, 0.0f);
     lOGLRenderer->EnableLight(GL_LIGHT2);
     
@@ -449,8 +447,18 @@ void TestScene::Render()
     drawQueue = GetDrawQueue(objects);
     while (!drawQueue.empty())
     {
-        //DebugOutput(L"Draw Queue Length: %d\n", drawQueue.size());
-        //DebugOutput(L"Drawing object: %s\n", drawQueue.top()->GetName().c_str());
+        // Since I never implemented materials as part of the object (oversight, to-do)
+        // Just enable emission on the sun here
+        if (drawQueue.top()->GetName() == L"Sun")
+        {
+            static GLfloat sunEmission[] = { 1.f, 1.f, 1.f, 1.f };            
+            lOGLRenderer->SetMaterial(GL_FRONT, GL_EMISSION, sunEmission);
+        }
+        else
+        {
+            static GLfloat noEmission[] = { 0.f, 0.f, 0.f, 1.f };
+            lOGLRenderer->SetMaterial(GL_FRONT, GL_EMISSION, noEmission);
+        }
         renderer->DrawObject(*drawQueue.top());        
         drawQueue.pop();        
     }

@@ -33,9 +33,9 @@ public:
         {
             return distanceLhs < distanceRhs;
         }
-        else
+        else 
         {
-            if (lhs->UsingTransparency())
+            if (lhs->UsingTransparency()) // Put the transparent object after non transparent object in the queue
             {
                 return true;
             }

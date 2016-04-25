@@ -6,6 +6,7 @@
 
 inline void DebugOutput(const wchar_t* Format, ...)
 {
+#ifdef _DEBUG
     wchar_t buff[1024];
     va_list arg;
     va_start(arg, Format);
@@ -13,4 +14,5 @@ inline void DebugOutput(const wchar_t* Format, ...)
     va_end(arg);
 
     OutputDebugString(buff);
+#endif
 }
