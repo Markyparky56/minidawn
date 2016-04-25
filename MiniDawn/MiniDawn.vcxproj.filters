@@ -254,5 +254,8 @@
     <ClInclude Include="Include\PrimitiveDisc.hpp">
       <Filter>Header Files\Templates\PrimitiveObjects</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Transform.hpp">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

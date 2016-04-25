@@ -1,4 +1,6 @@
 #include "LegacyOpenGLRenderer.hpp"
+#include "dbout.hpp"
+#include <stack>
 
 void LegacyOpenGLRenderer::Initialise()
 {
@@ -175,7 +177,7 @@ void LegacyOpenGLRenderer::DrawSkysphere(const Skysphere & InSkysphere)
 
 void LegacyOpenGLRenderer::DrawObject(const Object& InObject)
 {
-    const VertexObject* vo = InObject.GetVO();
+    const VertexObject* vo = InObject.GetVO().Get();
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -207,9 +209,33 @@ void LegacyOpenGLRenderer::DrawObject(const Object& InObject)
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     // Modify Geometry
-    Translate(InObject.GetPosition());
-    Rotate(InObject.GetRotation().deg, InObject.GetRotation().axis);
-    Scale(InObject.GetScale());
+    if (InObject.GetParent() != nullptr)
+    {
+        std::stack<const Transform*> transforms;
+        // Fill transforms with each inherited transform
+        const Object *parent = InObject.GetParent();
+        const Object *prevParent = nullptr;
+        while (parent != nullptr)
+        {
+            transforms.push(&(parent->GetTransform()));
+            prevParent = parent;
+            parent = parent->GetParent();
+        }
+        // Apply transforms
+        while (!transforms.empty())
+        {
+            if (prevParent->GetTransform().InheritPreRotation()) Rotate(transforms.top()->GetPreRotation().deg, transforms.top()->GetPreRotation().axis);
+            if (prevParent->GetTransform().InheritPosition())    Translate(transforms.top()->GetPosition());
+            if (prevParent->GetTransform().InheritRotation())    Rotate(transforms.top()->GetRotation().deg, transforms.top()->GetRotation().axis);
+            if (prevParent->GetTransform().InheritScale())       Scale(transforms.top()->GetScale());
+            transforms.pop();
+        }
+    }
+    // Apply our own transform
+    Rotate(InObject.GetTransform().GetPreRotation().deg, InObject.GetTransform().GetPreRotation().axis);
+    Translate(InObject.GetTransform().GetPosition());
+    Rotate(InObject.GetTransform().GetRotation().deg, InObject.GetTransform().GetRotation().axis);
+    Scale(InObject.GetTransform().GetScale());
     
     // Setup Arrays
     glVertexPointer(3, GL_FLOAT, 0, &(vo->GetVertices()[0]));
@@ -230,7 +256,7 @@ void LegacyOpenGLRenderer::DrawObject(const Object& InObject)
         break;
     }
     
-    glPopMatrix();
+    glPopMatrix(); // Undo geometry modifications
 
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     glDisableClientState(GL_NORMAL_ARRAY);

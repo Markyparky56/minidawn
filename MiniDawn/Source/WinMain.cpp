@@ -10,4 +10,5 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int nCmd
     {
         //GErrorHandler stuff?
     }
+    return Error;
 }

@@ -16,13 +16,6 @@ MiniDawnEngine::~MiniDawnEngine()
 int MiniDawnEngine::PreInit()
 {
     isRunning = false;
-    // Init timer
-
-    // create input handler
-
-    // create renderer
-
-    // create scene pointer?
     return 0;
 }
 

@@ -60,6 +60,7 @@
     <ClInclude Include="Include\PrimitiveUVSphere.hpp" />
     <ClInclude Include="Include\Skybox.hpp" />
     <ClInclude Include="Include\Skysphere.hpp" />
+    <ClInclude Include="Include\Transform.hpp" />
     <ClInclude Include="Include\UniqueObj.hpp" />
     <ClInclude Include="Include\UniquePtr.hpp" />
     <ClInclude Include="Include\VertexObject.hpp" />

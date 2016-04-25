@@ -23,8 +23,8 @@ public:
     bool operator()(spObject& lhs, spObject& rhs)
     {
         assert(cam);
-        Vector3 diffLhs = lhs->GetPosition() - cam->GetPosition();
-        Vector3 diffRhs = rhs->GetPosition() - cam->GetPosition();
+        Vector3 diffLhs = lhs->GetTransform().GetPosition() - cam->GetPosition();
+        Vector3 diffRhs = rhs->GetTransform().GetPosition() - cam->GetPosition();
         float distanceLhs = std::sqrtf(diffLhs.dot(diffLhs));
         float distanceRhs = std::sqrtf(diffRhs.dot(diffRhs));
 
@@ -60,18 +60,28 @@ private:
     void Render() override;
     void Setup() override;
 
+    void SetupObjects();
+
     float buttonPressGracePeriod;
     bool lockMouse;
     float lockMouseLastChangeTime;
     float wireframeModeLastChangeTime;
 
+    bool rotationActive;
+    float rotationActiveLastChangeTime;
+
     Vector2 screenCentre, newPos;
 
     CamRot camRot;
     UniquePtr<Camera> camera;
+    UniquePtr<Camera> fixedCam;
     float cameraSpeed;
+    bool fixedCamEnabled;
+    float fixedCamEnabledLastChangeTime;
 
     std::vector<spObject> objects;
+    std::unordered_map<std::wstring, spObject> objectMap;
+
     std::priority_queue<spObject, std::deque<spObject>, DrawQueueSort> drawQueue;
     //UniquePtr<Skybox> skybox;
     UniquePtr<Skysphere> skypshere;
