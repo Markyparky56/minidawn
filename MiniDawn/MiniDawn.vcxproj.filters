@@ -79,6 +79,9 @@
     <Filter Include="Header Files\Graphics\ModelLoader">
       <UniqueIdentifier>{9a7abfa7-1fdb-4cc1-8fbd-6a5d77bb807c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Systems\Networking">
+      <UniqueIdentifier>{0648bded-682b-4488-8604-362a82b6ad7a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\GErrorHandler.cpp">
@@ -123,9 +126,6 @@
     <ClCompile Include="Source\InputSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="Source\LegacyOpenGLRenderer.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
     <ClCompile Include="Source\TestScene.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
@@ -134,6 +134,9 @@
     </ClCompile>
     <ClCompile Include="Source\Scene.cpp">
       <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LegacyOpenGLRenderer.cpp">
+      <Filter>Source Files\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -230,9 +233,6 @@
     <ClInclude Include="Include\Object.hpp">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Include\DrawableObject.hpp">
-      <Filter>Header Files\Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="Include\VertexObject.hpp">
       <Filter>Header Files\Templates\PrimitiveObjects</Filter>
     </ClInclude>
@@ -256,6 +256,15 @@
     </ClInclude>
     <ClInclude Include="Include\Transform.hpp">
       <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkScene.hpp">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkSystem.hpp">
+      <Filter>Header Files\Systems\Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="TCPConnection.hpp">
+      <Filter>Header Files\Systems\Networking</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
