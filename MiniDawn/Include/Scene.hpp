@@ -5,8 +5,8 @@
 #include "SharedRef.hpp"
 
 // Temporary STL unique_ptr, replace with compatible UE4 UniquePtrs when able
-#include <memory>
-using pCamera = std::unique_ptr<Camera>;
+#include "UniquePtr.hpp"
+using pCamera = UniquePtr<Camera>;
 
 class GenericApplication;
 

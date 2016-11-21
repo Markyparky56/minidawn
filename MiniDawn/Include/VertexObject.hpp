@@ -2,7 +2,7 @@
 // Primitive Object Base Class
 #include "maths.vector.hpp"
 #include <vector>
-#include <Windows.h> // I cri ery tim
+#include <Windows.h>
 #include <gl/GL.h>
 #include "Texture.hpp"
 

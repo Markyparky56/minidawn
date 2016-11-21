@@ -1,6 +1,6 @@
 #pragma once
 // TODO: remove STL and Windows dependencies, it'll do for now though
-#include <memory>
+#include "UniquePtr.hpp"
 #include <array>
 #include <Windows.h>
 
@@ -40,4 +40,4 @@ private:
     mutable std::array<bool, 256> keys;
     mutable uint32_t mouseX, mouseY;
 };
-using pInputSystem = std::unique_ptr<InputSystem>;
+using pInputSystem = UniquePtr<InputSystem>;

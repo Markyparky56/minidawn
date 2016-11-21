@@ -1,5 +1,5 @@
 #pragma once
-#include <memory>
+#include "UniquePtr.hpp"
 #include "maths.vector.hpp"
 #include "rotation.hpp"
 #include <gl\GL.h>
@@ -43,4 +43,4 @@ public:
     inline const Vector3 GetScale() const       { return scale; }
 
 };
-using pTexture = std::unique_ptr<Texture>;
+using pTexture = UniquePtr<Texture>;
