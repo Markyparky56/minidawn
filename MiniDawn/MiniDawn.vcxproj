@@ -39,6 +39,7 @@
     <ClCompile Include="Source\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Channel.hpp" />
     <ClInclude Include="Include\Camera.hpp" />
     <ClInclude Include="Include\GenericApplication.hpp" />
     <ClInclude Include="Include\GenericMemory.hpp" />
@@ -167,13 +168,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>PLATFORM_WINDOWS;_CRT_SECURE_NO_WARNINGS;_DEBUG;%(PreprocessorDefinitions);PLATFORM_WINDOWS</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\include;E:\local\boost_1_62_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\include;C:\local\boost_1_62_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>OpenGL32.lib;glu32.lib;winmm.lib;msimg32.lib;SOIL.lib;user32.lib;gdi32.lib;libboost_system-vc140-mt-sgd-1_62.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)/lib/$(Configuration);E:\local\boost_1_62_0\lib64-msvc-14.0</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)/lib/$(Configuration);C:\local\boost_1_62_0\lib64-msvc-14.0</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -202,7 +203,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>PLATFORM_WINDOWS;_CRT_SECURE_NO_WARNINGS;NDEBUG;_WINDOWS;%(PreprocessorDefinitions);PLATFORM_WINDOWS;</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\include;E:\local\boost_1_62_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\include;C:\local\boost_1_62_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
@@ -211,7 +212,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>OpenGL32.lib;glu32.lib;winmm.lib;msimg32.lib;SOIL.lib;user32.lib;gdi32.lib;libboost_system-vc140-mt-s-1_62</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)/lib/$(Configuration);E:\local\boost_1_62_0\lib64-msvc-14.0</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)/lib/$(Configuration);C:\local\boost_1_62_0\lib64-msvc-14.0</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

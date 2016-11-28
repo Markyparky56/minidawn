@@ -266,5 +266,8 @@
     <ClInclude Include="TCPConnection.hpp">
       <Filter>Header Files\Systems\Networking</Filter>
     </ClInclude>
+    <ClInclude Include="Channel.hpp">
+      <Filter>Header Files\Templates</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
