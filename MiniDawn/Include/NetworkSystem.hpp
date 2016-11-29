@@ -51,35 +51,37 @@ public:
     {
         udp::resolver resolver(io_service);
         udp::resolver::query query(udp::v4(), "localhost", "4444");
-        boost::asio::ip::basic_resolver_iterator<boost::asio::ip::udp> endpoints;
-#ifdef _DEBUG
-        try
-        {
-#endif
-            endpoints = resolver.resolve(query);
-#ifdef _DEBUG
-        }
-        catch (boost::system::system_error &e)
-        {
-            // Resolve failed
-            std::cerr << e.what() << std::endl;
-
-            abort(); // Graceful, nope, probably my own fault, likely.
-        }
-#endif
-        udpEndpoint = *endpoints;
-        udpSocket = udp::socket(io_service);
-        udpSocket.open(udp::v4()); // We need our own socket so we can listen to what the server wants to send us
+        resolver.async_resolve(
+            query, 
+            boost::bind(&NetworkSystem::udpHandleResolve, this, boost::asio::placeholders::error, boost::asio::placeholders::iterator)
+        );
+//        boost::asio::ip::basic_resolver_iterator<boost::asio::ip::udp> endpoints;
+//#ifdef _DEBUG
+//        try
+//        {
+//#endif
+//            endpoints = resolver.resolve(query);
+//#ifdef _DEBUG
+//        }
+//        catch (boost::system::system_error &e)
+//        {
+//            // Resolve failed
+//            std::cerr << e.what() << std::endl;
+//
+//            abort(); // Graceful, nope, probably my own fault, likely.
+//        }
+//#endif
+//        udpEndpoint = *endpoints;
+        
     }
 
     void UDPSend(UDPMessage &msg)
     {
-        memset(udpSendBuffer.c_array(), 0, sizeof(UDPMessage));
         memcpy(udpSendBuffer.c_array(), reinterpret_cast<uint8_t*>(&msg), sizeof(UDPMessage));
-        udpSocket.async_send_to( 
-            boost::asio::buffer(udpSendBuffer), 
-            udpEndpoint, 
-            boost::bind(&NetworkSystem::udpHandleSend, this, boost::asio::placeholders::error)
+        udpSocket.async_send_to(
+            boost::asio::buffer(udpSendBuffer),
+            udpEndpoint,
+            boost::bind(&NetworkSystem::udpHandleSend, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred)
         );
         udpBusy = true; // We'll flip this back off after it's sent
     }
@@ -89,7 +91,7 @@ public:
         udpSocket.async_receive_from(
             boost::asio::buffer(udpRecvBuffer),
             udpEndpoint,
-            boost::bind(&NetworkSystem::udpHandleReceive, this, boost::asio::placeholders::error)
+            boost::bind(&NetworkSystem::udpHandleReceive, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred)
         );
     }
 
@@ -97,33 +99,19 @@ public:
     {
         tcp::resolver resolver(io_service);
         tcp::resolver::query query(tcp::v4(), "localhost", "4444");
-        boost::asio::ip::basic_resolver_iterator<boost::asio::ip::tcp> endpoints;
-#ifdef _DEBUG
-        try
-        {
-#endif
-            endpoints = resolver.resolve(query);
-#ifdef _DEBUG
-        }
-        catch (boost::system::system_error &e)
-        {
-            // Resolve failed
-            std::cerr << e.what() << std::endl;
-            abort();
-        }
-#endif
-        tcpEndpoint = *endpoints;
-        tcpSocket = tcp::socket(io_service);
-        boost::asio::connect(tcpSocket, tcpEndpoint); // Maybe move this to an async connect?
+        tcpBusy = true; // While we're off asynchronously connecting we don't want to try sending anything
+        resolver.async_resolve(
+            query,
+            boost::bind(&NetworkSystem::tcpHandleResolve, this, boost::asio::placeholders::error, boost::asio::placeholders::iterator)
+        );
     }
 
     void TCPSend(TCPMessage &msg)
     {
-        memset(tcpSendBuffer.c_array(), 0, sizeof(TCPMessage));
         memcpy(tcpSendBuffer.c_array(), reinterpret_cast<uint8_t*>(&msg), sizeof(TCPMessage));
         tcpSocket.async_send(
             boost::asio::buffer(tcpSendBuffer),
-            boost::bind(&NetworkSystem::tcpHandleSend, this, boost::asio::placeholders::error)
+            boost::bind(&NetworkSystem::tcpHandleSend, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred)
         );
         tcpBusy = true; // Will be turned off when the tcp message is sent
     }
@@ -132,33 +120,34 @@ public:
     {
         tcpSocket.async_receive(
             boost::asio::buffer(tcpRecvBuffer),
-            boost::bind(&NetworkSystem::tcpHandleReceive, this, boost::asio::placeholders::error)
+            boost::bind(&NetworkSystem::tcpHandleReceive, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred)
         );
     }
 
 private:
+    void udpHandleResolve(const boost::system::error_code &error, udp::resolver::iterator endpointIter);
     void udpHandleReceive(const boost::system::error_code &error, std::size_t bytesTransferred);
-    void udpHandleSend(boost::shared_ptr<UDPMessage> msg, const boost::system::error_code &error, std::size_t bytesTransferred);
+    void udpHandleSend(const boost::system::error_code &error, std::size_t bytesTransferred);
 
+    void tcpHandleResolve(const boost::system::error_code &error, tcp::resolver::iterator endpointIter);
+    void tcpHandleConnect(const boost::system::error_code &error);
     void tcpHandleReceive(const boost::system::error_code &error, std::size_t bytesTransferred);
-    void tcpHandleSend(boost::shared_ptr<TCPMessage> msg, const boost::system::error_code &error, std::size_t bytesTransferred);
+    void tcpHandleSend(const boost::system::error_code &error, std::size_t bytesTransferred);
         
     boost::array<uint8_t, sizeof(UDPMessage)> udpSendBuffer;
     boost::array<uint8_t, sizeof(UDPMessage)> udpRecvBuffer;
-    //SharedPtr<UDPMessage> udpRcvdMessagePtr;
+    SharedPtr<UDPMessage> udpRcvdMessagePtr;
     bool udpBusy;
 
     boost::array<uint8_t, sizeof(TCPMessage)> tcpSendBuffer;
     boost::array<uint8_t, sizeof(TCPMessage)> tcpRecvBuffer;
-    //SharedPtr<TCPMessage> tcpRcvdMessagePtr;
+    SharedPtr<TCPMessage> tcpRcvdMessagePtr;
     bool tcpBusy;
 
     boost::asio::io_service io_service;
-    udp::resolver udpResolver;
     udp::endpoint udpEndpoint;
-    tcp::resolver tcpResolver;
-    tcp::endpoint tcpEndpoint;
     tcp::socket tcpSocket;
+    tcp::resolver::iterator tcpEndpointIterator;
     udp::socket udpSocket;
 
     // For storing received messages
