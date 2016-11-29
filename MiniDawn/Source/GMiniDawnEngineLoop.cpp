@@ -1,6 +1,6 @@
 #include "GMiniDawnEngineLoop.hpp"
 
-#include "TestScene.hpp"
+#include "NetworkScene.hpp"
 
 extern MiniDawnEngine GMiniDawnEngine;
 MiniDawnEngineLoop GEngineLoop;

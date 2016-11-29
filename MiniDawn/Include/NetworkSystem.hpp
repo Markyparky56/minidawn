@@ -74,12 +74,14 @@ public:
 
     void UDPSend(UDPMessage &msg)
     {
+        memset(udpSendBuffer.c_array(), 0, sizeof(UDPMessage));
         memcpy(udpSendBuffer.c_array(), reinterpret_cast<uint8_t*>(&msg), sizeof(UDPMessage));
         udpSocket.async_send_to( 
             boost::asio::buffer(udpSendBuffer), 
             udpEndpoint, 
             boost::bind(&NetworkSystem::udpHandleSend, this, boost::asio::placeholders::error)
         );
+        udpBusy = true; // We'll flip this back off after it's sent
     }
 
     void UDPReceive()
@@ -112,15 +114,25 @@ public:
 #endif
         tcpEndpoint = *endpoints;
         tcpSocket = tcp::socket(io_service);
-        boost::asio::connect(tcpSocket, tcpEndpoint);
+        boost::asio::connect(tcpSocket, tcpEndpoint); // Maybe move this to an async connect?
     }
 
     void TCPSend(TCPMessage &msg)
     {
+        memset(tcpSendBuffer.c_array(), 0, sizeof(TCPMessage));
         memcpy(tcpSendBuffer.c_array(), reinterpret_cast<uint8_t*>(&msg), sizeof(TCPMessage));
         tcpSocket.async_send(
             boost::asio::buffer(tcpSendBuffer),
-            boost::bind(&NetworkSystem::udpHandleSend, this, boost::asio::placeholders::error)
+            boost::bind(&NetworkSystem::tcpHandleSend, this, boost::asio::placeholders::error)
+        );
+        tcpBusy = true; // Will be turned off when the tcp message is sent
+    }
+
+    void TCPReceive()
+    {
+        tcpSocket.async_receive(
+            boost::asio::buffer(tcpRecvBuffer),
+            boost::bind(&NetworkSystem::tcpHandleReceive, this, boost::asio::placeholders::error)
         );
     }
 
@@ -133,11 +145,13 @@ private:
         
     boost::array<uint8_t, sizeof(UDPMessage)> udpSendBuffer;
     boost::array<uint8_t, sizeof(UDPMessage)> udpRecvBuffer;
-    SharedPtr<UDPMessage> udpRcvdMessagePtr;
+    //SharedPtr<UDPMessage> udpRcvdMessagePtr;
+    bool udpBusy;
 
     boost::array<uint8_t, sizeof(TCPMessage)> tcpSendBuffer;
     boost::array<uint8_t, sizeof(TCPMessage)> tcpRecvBuffer;
-    SharedPtr<TCPMessage> tcpRcvdMessagePtr;
+    //SharedPtr<TCPMessage> tcpRcvdMessagePtr;
+    bool tcpBusy;
 
     boost::asio::io_service io_service;
     udp::resolver udpResolver;
@@ -151,7 +165,7 @@ private:
     std::stack<UDPMessage> udpMessageStack;
     std::queue<TCPMessage> tcpMessageQueue;
 
-    // For passing received messages from the async functions to the main 
+    // For passing received messages from the async functions to the main thread
     Channel<UDPMessage> udpMessageChannel;
     Channel<TCPMessage> tcpMessageChannel;
 
