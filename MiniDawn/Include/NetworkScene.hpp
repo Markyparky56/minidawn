@@ -68,9 +68,9 @@ private:
 
     Vector2 screenCentre, newPos;
 
-    CamRot camRot;
-    UniquePtr<Camera> camera;
-    float cameraSpeed;
+    YawPitchRoll camRot, playerRot;
+    UniquePtr<Camera> camera, firstPersonCam;
+    float playerSpeed;
     
     std::vector<spObject> objects;
     std::unordered_map<std::wstring, spObject> objectMap;

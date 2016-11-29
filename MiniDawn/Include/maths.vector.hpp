@@ -128,6 +128,26 @@ public:
     }
 };
 
+inline Vector3 operator*(int lhs, Vector3 rhs)
+{
+    return Vector3(lhs * rhs.x, lhs * rhs.y, lhs * rhs.z);
+}
+
+inline Vector3 operator/(int lhs, Vector3 rhs)
+{
+    return Vector3(lhs / rhs.x, lhs / rhs.y, lhs / rhs.z);
+}
+
+inline Vector3 operator*(float lhs, Vector3 rhs)
+{
+    return Vector3(lhs * rhs.x, lhs * rhs.y, lhs * rhs.z);
+}
+
+inline Vector3 operator/(float lhs, Vector3 rhs)
+{
+    return Vector3(lhs / rhs.x, lhs / rhs.y, lhs / rhs.z);
+}
+
 class Vector2
 {
 public:
@@ -228,3 +248,23 @@ public:
         return Vector2(x * rhs.x, y * rhs.y);
     }
 };
+
+inline Vector2 operator*(int lhs, Vector2 rhs)
+{
+    return Vector2(lhs*rhs.x, lhs*rhs.y);
+}
+
+inline Vector2 operator/(int lhs, Vector2 rhs)
+{
+    return Vector2(lhs / rhs.x, lhs / rhs.y);
+}
+
+inline Vector2 operator*(float lhs, Vector2 rhs)
+{
+    return Vector2(lhs * rhs.x, lhs * rhs.y);
+}
+
+inline Vector2 operator/(float lhs, Vector2 rhs)
+{
+    return Vector2(lhs / rhs.x, lhs / rhs.y);
+}

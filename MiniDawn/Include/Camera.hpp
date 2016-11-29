@@ -7,6 +7,14 @@ using std::cosf;
 
 const double PI = 3.1415926535897932384626433832795;
 
+// Basically a Vector3 without all the maths
+struct YawPitchRoll
+{    
+    float yaw;
+    float pitch;
+    float roll;
+};
+
 class Camera
 {
 public:
@@ -22,12 +30,19 @@ public:
     inline void SetYaw(const float NewYaw)          { yaw = NewYaw; }
     inline void SetPitch(const float NewPitch)      { pitch = NewPitch; }
     inline void SetRoll(const float NewRoll)        { roll = NewRoll; }
+    inline void SetCameraRotation(const YawPitchRoll &camRot)
+    { 
+        roll = camRot.roll; 
+        pitch = camRot.pitch; 
+        yaw = camRot.yaw; 
+    }
 
     inline Vector3& GetPosition()    { return position; }
     inline Vector3& GetLookAt()      { return lookat; }
     inline Vector3& GetUp()          { return up; }
     inline Vector3& GetForward()     { return forward; }
     inline Vector3& GetRight()       { return right; }
+    inline YawPitchRoll GetYawPitchRoll() { return{ yaw,pitch,roll }; }
 
     void Update();
 
@@ -38,12 +53,4 @@ protected:
     Vector3 right;
     Vector3 forward;
     float yaw, pitch, roll;
-};
-
-// Basically a Vector3 without all the maths
-struct CamRot
-{
-    float roll;
-    float yaw;
-    float pitch;
 };

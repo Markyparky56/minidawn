@@ -99,8 +99,7 @@ void TestScene::SetupObjects()
     world->SetParent(sun.Get(), TransformInheritance(true, false, true, false));
     objects.push_back(world);
     objectMap.insert(std::make_pair(world->GetName(), world));
-
-
+    
     spObject clouds(new Object);
     clouds->SetVO(MakeShareable(new PrimitiveUVSphere(256, 128)));
     clouds->GetTransform().SetScale(Vector3(1.01f, 1.01f, 1.01f));

@@ -54,7 +54,7 @@ bool MiniDawnEngineLoop::AppInit()
 #endif
 
     // Create Scene
-    SharedPtr<Scene> scene = MakeShareable(new TestScene);
+    SharedPtr<Scene> scene = MakeShareable(new NetworkScene);
     application->InitialiseScene(scene);
 
     return false;

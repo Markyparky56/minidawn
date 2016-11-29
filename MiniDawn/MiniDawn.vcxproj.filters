@@ -138,6 +138,12 @@
     <ClCompile Include="Source\LegacyOpenGLRenderer.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Source\NetworkScene.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\NetworkSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\MiniDawn.hpp">
@@ -257,17 +263,17 @@
     <ClInclude Include="Include\Transform.hpp">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="NetworkScene.hpp">
-      <Filter>Header Files\Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="NetworkSystem.hpp">
-      <Filter>Header Files\Systems\Networking</Filter>
-    </ClInclude>
     <ClInclude Include="TCPConnection.hpp">
       <Filter>Header Files\Systems\Networking</Filter>
     </ClInclude>
     <ClInclude Include="Channel.hpp">
       <Filter>Header Files\Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\NetworkSystem.hpp">
+      <Filter>Header Files\Systems\Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\NetworkScene.hpp">
+      <Filter>Header Files\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
