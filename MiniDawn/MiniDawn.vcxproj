@@ -65,6 +65,7 @@
     <ClInclude Include="Include\Object.hpp" />
     <ClInclude Include="Include\PrimitiveDisc.hpp" />
     <ClInclude Include="Include\PrimitiveUVSphere.hpp" />
+    <ClInclude Include="Include\Protocol.hpp" />
     <ClInclude Include="Include\Skybox.hpp" />
     <ClInclude Include="Include\Skysphere.hpp" />
     <ClInclude Include="Include\Transform.hpp" />

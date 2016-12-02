@@ -275,5 +275,8 @@
     <ClInclude Include="Include\NetworkScene.hpp">
       <Filter>Header Files\Scenes</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Protocol.hpp">
+      <Filter>Header Files\Systems\Networking</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

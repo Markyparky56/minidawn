@@ -25,6 +25,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
 #include "Channel.hpp"
+#include "Protocol.hpp"
 #include <thread>
 
 using pThread = UniquePtr<std::thread>;
@@ -34,18 +35,14 @@ using boost::asio::ip::udp;
 class NetworkSystem : public boost::enable_shared_from_this<NetworkSystem>
 {
 public:
-    NetworkSystem();
-    ~NetworkSystem();
-
-    struct UDPMessage
-    {
-
+    NetworkSystem()         
+        : udpSocket(io_service, udp::endpoint())
+        , tcpSocket(io_service, tcp::endpoint())
+    {     
+        UDPInit();
+        TCPInit();
     };
-
-    struct TCPMessage
-    {
-
-    };
+    ~NetworkSystem() {};
 
     bool UDPInit()
     {
@@ -54,25 +51,7 @@ public:
         resolver.async_resolve(
             query, 
             boost::bind(&NetworkSystem::udpHandleResolve, this, boost::asio::placeholders::error, boost::asio::placeholders::iterator)
-        );
-//        boost::asio::ip::basic_resolver_iterator<boost::asio::ip::udp> endpoints;
-//#ifdef _DEBUG
-//        try
-//        {
-//#endif
-//            endpoints = resolver.resolve(query);
-//#ifdef _DEBUG
-//        }
-//        catch (boost::system::system_error &e)
-//        {
-//            // Resolve failed
-//            std::cerr << e.what() << std::endl;
-//
-//            abort(); // Graceful, nope, probably my own fault, likely.
-//        }
-//#endif
-//        udpEndpoint = *endpoints;
-        
+        );               
     }
 
     void UDPSend(UDPMessage &msg)
@@ -99,11 +78,11 @@ public:
     {
         tcp::resolver resolver(io_service);
         tcp::resolver::query query(tcp::v4(), "localhost", "4444");
-        tcpBusy = true; // While we're off asynchronously connecting we don't want to try sending anything
         resolver.async_resolve(
             query,
             boost::bind(&NetworkSystem::tcpHandleResolve, this, boost::asio::placeholders::error, boost::asio::placeholders::iterator)
         );
+        tcpBusy = true; // While we're off asynchronously connecting we don't want to try sending anything
     }
 
     void TCPSend(TCPMessage &msg)
@@ -144,11 +123,11 @@ private:
     SharedPtr<TCPMessage> tcpRcvdMessagePtr;
     bool tcpBusy;
 
-    boost::asio::io_service io_service;
-    udp::endpoint udpEndpoint;
+    boost::asio::io_service io_service;    
     tcp::socket tcpSocket;
     tcp::resolver::iterator tcpEndpointIterator;
     udp::socket udpSocket;
+    udp::endpoint udpEndpoint;
 
     // For storing received messages
     std::stack<UDPMessage> udpMessageStack;
