@@ -9,6 +9,7 @@ void NetworkSystem::udpHandleResolve(const boost::system::error_code & error, ud
 
         udpSocket = udp::socket(io_service);
         udpSocket.open(udp::v4()); // We need our own socket so we can listen to what the server wants to send us
+        UDPReceive(); // Start listening for messages
     }
     else
     {
@@ -36,6 +37,8 @@ void NetworkSystem::udpHandleReceive(const boost::system::error_code & error, st
         abort();
 #endif
     }
+    UDPReceive(); // Back to listening
+
 }
 
 void NetworkSystem::udpHandleSend(const boost::system::error_code & error, std::size_t bytesTransferred)
