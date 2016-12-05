@@ -1,5 +1,6 @@
 #pragma once
 // Engine Include
+#include "NetworkSystem.hpp"
 #include "Scene.hpp"
 #include "LegacyOpenGLRenderer.hpp" // Really should get around to setting up a less outdated renderer
 #include "PrimitiveObjects.hpp"
@@ -10,8 +11,10 @@
 #include <vector>
 #include <unordered_map>
 #include <queue>
+#include <array>
 
 #include <cassert>
+#include <algorithm>
 
 struct GenericWindowDefinition;
 
@@ -51,7 +54,7 @@ public:
 class NetworkScene : public Scene
 {
 public:
-    NetworkScene() {}
+    NetworkScene() : playersSorted(false) {}
     ~NetworkScene() {}
 
 private:
@@ -60,6 +63,7 @@ private:
     void Setup() override;
 
     void SetupObjects();
+    void SortPlayersById();
 
     float buttonPressGracePeriod;
     bool lockMouse;
@@ -71,12 +75,18 @@ private:
     YawPitchRoll camRot, playerRot;
     UniquePtr<Camera> camera, firstPersonCam;
     float playerSpeed;
+    uint8_t playerId;
     
     std::vector<spObject> objects;
+    std::vector<spObject> players;
+    std::array<Vector3, 16> playerDirections; // This is where having a bespoke "player" class would begin to be useful
+    bool playersSorted;
     std::unordered_map<std::wstring, spObject> objectMap;
 
     std::priority_queue<spObject, std::deque<spObject>, DrawQueueSort> drawQueue;
     UniquePtr<Skysphere> skysphere;
 
     SharedPtr<GenericWindowDefinition> windowDef;
+
+    pNetworkSystem networkSystem;
 };

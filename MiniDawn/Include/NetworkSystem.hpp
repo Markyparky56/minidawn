@@ -24,9 +24,12 @@
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp> // For async timers
 #include "Channel.hpp"
 #include "Protocol.hpp"
 #include <thread>
+#include <functional>
+#include <array>
 
 using pThread = UniquePtr<std::thread>;
 using boost::asio::ip::tcp;
@@ -35,75 +38,46 @@ using boost::asio::ip::udp;
 class NetworkSystem : public boost::enable_shared_from_this<NetworkSystem>
 {
 public:
-    NetworkSystem()         
-        : udpSocket(io_service, udp::endpoint())
-        , tcpSocket(io_service, tcp::endpoint())
-    {     
-        UDPInit();
-        TCPInit();
+    struct PlayerRecordHistory // Name is maybe a little ambiguous, tracks the last time a record was updated, and if it has been updated this frame
+    {
+        bool UpdatedThisFrame;
+        uint64_t timestamp;
     };
-    ~NetworkSystem() {};
 
-    bool UDPInit()
-    {
-        udp::resolver resolver(io_service);
-        udp::resolver::query query(udp::v4(), "localhost", "4444");
-        resolver.async_resolve(
-            query, 
-            boost::bind(&NetworkSystem::udpHandleResolve, this, boost::asio::placeholders::error, boost::asio::placeholders::iterator)
-        );               
-    }
+public:
+    NetworkSystem();
+    ~NetworkSystem();
 
-    void UDPSend(UDPMessage &msg)
-    {
-        memcpy(udpSendBuffer.c_array(), reinterpret_cast<uint8_t*>(&msg), sizeof(UDPMessage));
-        udpSocket.async_send_to(
-            boost::asio::buffer(udpSendBuffer),
-            udpEndpoint,
-            boost::bind(&NetworkSystem::udpHandleSend, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred)
-        );
-        udpBusy = true; // We'll flip this back off after it's sent
-    }
+    void Start();
+    void Shutdown();
 
-    void UDPReceive()
-    {
-        udpSocket.async_receive_from(
-            boost::asio::buffer(udpRecvBuffer),
-            udpEndpoint,
-            boost::bind(&NetworkSystem::udpHandleReceive, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred)
-        );
-    }
-
-    bool TCPInit()
-    {
-        tcp::resolver resolver(io_service);
-        tcp::resolver::query query(tcp::v4(), "localhost", "4444");
-        resolver.async_resolve(
-            query,
-            boost::bind(&NetworkSystem::tcpHandleResolve, this, boost::asio::placeholders::error, boost::asio::placeholders::iterator)
-        );
-        tcpBusy = true; // While we're off asynchronously connecting we don't want to try sending anything
-    }
-
-    void TCPSend(TCPMessage &msg)
-    {
-        memcpy(tcpSendBuffer.c_array(), reinterpret_cast<uint8_t*>(&msg), sizeof(TCPMessage));
-        tcpSocket.async_send(
-            boost::asio::buffer(tcpSendBuffer),
-            boost::bind(&NetworkSystem::tcpHandleSend, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred)
-        );
-        tcpBusy = true; // Will be turned off when the tcp message is sent
-    }
-
-    void TCPReceive()
-    {
-        tcpSocket.async_receive(
-            boost::asio::buffer(tcpRecvBuffer),
-            boost::bind(&NetworkSystem::tcpHandleReceive, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred)
-        );
-    }
+    const std::array<PlayerRecord, 16> GetPlayerRecords() { return playerRecords; }
+    const std::array<PlayerRecord, 16> GetOldPlayerRecords() { return oldPlayerRecords; }
+    const std::array<PlayerRecordHistory, 16> GetPlayerRecordHistory() { return playerRecordHistory; }
+    const std::array<bool, 16> GetActivePlayers() { return activePlayers; }
+    const uint8_t GetMyId() { return myId; }
+    const bool ConnectedAndIdentified() { return connectedAndIdentified; }
+    const bool SnapshotReceivedThisFrame() { return snapshotReceivedThisFrame; }
+    void SetMyRecord(Transform &transform);
+    void Tick();
 
 private:
+    void ioServiceThreadFunc()
+    {
+        std::cout << "io_service thread starting...\n";
+        size_t ret = io_service.run();
+        std::cout << ret << " handlers executed by io_service during run." << std::endl;
+    }
+
+    void udpInit();
+    void udpSend(UDPMessage &msg);
+    void udpReceive();
+    void udpUpdate(); // Send a PlayerUpdate message to the server
+
+    void tcpInit();
+    void tcpSend(TCPMessage &msg);
+    void tcpReceive();
+
     void udpHandleResolve(const boost::system::error_code &error, udp::resolver::iterator endpointIter);
     void udpHandleReceive(const boost::system::error_code &error, std::size_t bytesTransferred);
     void udpHandleSend(const boost::system::error_code &error, std::size_t bytesTransferred);
@@ -113,30 +87,36 @@ private:
     void tcpHandleReceive(const boost::system::error_code &error, std::size_t bytesTransferred);
     void tcpHandleSend(const boost::system::error_code &error, std::size_t bytesTransferred);
         
+
+    std::array<PlayerRecord, 16> playerRecords;
+    std::array<PlayerRecord, 16> oldPlayerRecords;
+    uint8_t myId;
+    std::array<bool, 16> activePlayers;
+    std::array<PlayerRecordHistory, 16> playerRecordHistory;
+
     boost::array<uint8_t, sizeof(UDPMessage)> udpSendBuffer;
     boost::array<uint8_t, sizeof(UDPMessage)> udpRecvBuffer;
-    SharedPtr<UDPMessage> udpRcvdMessagePtr;
-    bool udpBusy;
 
     boost::array<uint8_t, sizeof(TCPMessage)> tcpSendBuffer;
     boost::array<uint8_t, sizeof(TCPMessage)> tcpRecvBuffer;
-    SharedPtr<TCPMessage> tcpRcvdMessagePtr;
     bool tcpBusy;
 
     boost::asio::io_service io_service;    
     tcp::socket tcpSocket;
+    tcp::resolver tcpResolver;
     tcp::resolver::iterator tcpEndpointIterator;
     udp::socket udpSocket;
+    udp::resolver udpResolver;
     udp::endpoint udpEndpoint;
-
-    // For storing received messages
-    std::stack<UDPMessage> udpMessageStack;
-    std::queue<TCPMessage> tcpMessageQueue;
+    boost::asio::deadline_timer *udpUpdateTimer;
 
     // For passing received messages from the async functions to the main thread
-    Channel<UDPMessage> udpMessageChannel;
-    Channel<TCPMessage> tcpMessageChannel;
+    Channel<UDPMessage, std::stack<UDPMessage> > udpMessageChannel;
+    Channel<TCPMessage, std::queue<TCPMessage> > tcpMessageChannel;
 
     pThread ioServiceThread;
+    bool shutdown;
+    bool connectedAndIdentified;
+    bool snapshotReceivedThisFrame;
 };
 using pNetworkSystem = UniquePtr<NetworkSystem>;

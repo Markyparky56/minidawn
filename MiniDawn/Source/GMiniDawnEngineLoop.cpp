@@ -1,6 +1,6 @@
+#include "NetworkScene.hpp" // Has to be included first or boost/asio.hpp will conflict with windows.h
 #include "GMiniDawnEngineLoop.hpp"
 
-#include "NetworkScene.hpp"
 
 extern MiniDawnEngine GMiniDawnEngine;
 MiniDawnEngineLoop GEngineLoop;

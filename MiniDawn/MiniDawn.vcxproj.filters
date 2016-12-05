@@ -263,12 +263,6 @@
     <ClInclude Include="Include\Transform.hpp">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="TCPConnection.hpp">
-      <Filter>Header Files\Systems\Networking</Filter>
-    </ClInclude>
-    <ClInclude Include="Channel.hpp">
-      <Filter>Header Files\Templates</Filter>
-    </ClInclude>
     <ClInclude Include="Include\NetworkSystem.hpp">
       <Filter>Header Files\Systems\Networking</Filter>
     </ClInclude>
@@ -277,6 +271,9 @@
     </ClInclude>
     <ClInclude Include="Include\Protocol.hpp">
       <Filter>Header Files\Systems\Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Channel.hpp">
+      <Filter>Header Files\Templates</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
